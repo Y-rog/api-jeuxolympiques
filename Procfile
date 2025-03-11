@@ -1,2 +1,2 @@
-web: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/ton-application.war
+web: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/api-jeuxolympiques-0.0.1-SNAPSHOT.war
 

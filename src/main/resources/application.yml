@@ -12,10 +12,10 @@ spring:
 
   # Profil actif
   profiles:
-    active: dev
+    active: prod
 
 server:
-  port: 8081
+  port: ${PORT}
 
 
 
