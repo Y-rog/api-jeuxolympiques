@@ -2,6 +2,10 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
   jpa:
     show-sql: true
     hibernate:
@@ -10,12 +14,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-  # Profil actif
-  profiles:
-    active: prod
-
 server:
-  port: ${PORT}
+  port: ${PORT:8081}
 
 
 
