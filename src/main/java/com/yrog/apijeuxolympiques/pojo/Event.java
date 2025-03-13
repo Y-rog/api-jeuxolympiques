@@ -1,8 +1,6 @@
 package com.yrog.apijeuxolympiques.pojo;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.SchemaProperties;
-import io.swagger.v3.oas.annotations.media.SchemaProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,19 +14,25 @@ public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(hidden = true)
     private Long eventId;
 
+    @NotNull
     private String eventTitle;
+
+    @NotNull
     private String eventDescription;
+
+    @NotNull
     private String eventLocation;
+
+    @NotNull
     private LocalDateTime eventDateTime;
 
     public Event() {
 
     }
 
-    public Event(String eventTitle, String eventDescription, String eventLocation, LocalDateTime eventDateTime) {
+    public Event(@NotNull String eventTitle, @NotNull String eventDescription, @NotNull String eventLocation, @NotNull LocalDateTime eventDateTime) {
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
         this.eventLocation = eventLocation;
