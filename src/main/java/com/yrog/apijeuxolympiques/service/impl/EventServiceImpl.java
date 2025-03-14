@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -24,5 +26,15 @@ public class EventServiceImpl implements EventService {
         Event event = eventMapper.toEntity(eventDTO);
         Event savedEvent = eventRepository.save(event);
         return eventMapper.toDTO(savedEvent);
+    }
+
+    @Override
+    public Event getEventById(Long eventId) {
+        return this.eventRepository.findById(eventId).orElse(null);
+    }
+
+    @Override
+    public List<Event> getAllEvents() {
+        return this.eventRepository.findAll();
     }
 }

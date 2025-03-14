@@ -1,6 +1,7 @@
 package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
+import com.yrog.apijeuxolympiques.pojo.Event;
 import com.yrog.apijeuxolympiques.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +34,18 @@ public class EventController {
         EventDTO createdEvent = eventService.createEvent(eventDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
 
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllEvents() {
+        List<Event> events = eventService.getAllEvents();
+        return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getEventById(@PathVariable Long id) {
+        Event event = eventService.getEventById(id);
+        return ResponseEntity.ok(event);
     }
 
 }
