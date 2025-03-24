@@ -9,13 +9,17 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 server:
   port: ${PORT:8081}
+
+jo:
+  jwtSecret: 2edefefefrfrogkreqgjoigreiqqgnirngeqrngquegnueqngogqungtuoqtugqnuqgnguqtngqtgoqtgoutnqgûgtougq
+  jwtExpirationInMs: 86400000
 
 
 
