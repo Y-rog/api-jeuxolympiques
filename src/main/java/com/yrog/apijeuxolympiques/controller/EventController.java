@@ -2,11 +2,14 @@ package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
 import com.yrog.apijeuxolympiques.pojo.Event;
+import com.yrog.apijeuxolympiques.security.models.Role;
 import com.yrog.apijeuxolympiques.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,7 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
+    @Secured("ROLE_ADMIN")
     @PostMapping
     public ResponseEntity<?> saveEvent(@Valid @RequestBody EventDTO eventDTO, BindingResult bindingResult) {
 

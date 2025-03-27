@@ -2,6 +2,7 @@ package com.yrog.apijeuxolympiques.configuration;
 
 import com.yrog.apijeuxolympiques.security.jwt.AuthEntryPointJwt;
 import com.yrog.apijeuxolympiques.security.jwt.AuthTokenFilter;
+import com.yrog.apijeuxolympiques.security.models.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import static com.yrog.apijeuxolympiques.security.models.ERole.ADMIN;
 
 
 @Configuration
@@ -62,8 +65,9 @@ public class WebSecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:4200") // Ton URL Angular
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:4200")
+                        .allowedOrigins("http://localhost:8081")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(true);
@@ -78,8 +82,12 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/auth/changePassword").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/auth/register").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event").hasAuthority("ROLE_" + ERole.ADMIN.name())
                         .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());

@@ -12,7 +12,15 @@ import java.util.Set;
 public class SignupRequest {
 
     @NotBlank
-    @Size(min = 3, max = 50)
+    @Size(min = 3, max = 100)
+    private String firstname;
+
+    @NotBlank
+    @Size(min = 3, max = 100)
+    private String lastname;
+
+    @NotBlank
+    @Size(min = 3, max = 100)
     @Email
     private String username;
 
@@ -21,5 +29,4 @@ public class SignupRequest {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", message = "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un caractère spécial")
     private String password;
 
-    private Set<String> role;
 }
