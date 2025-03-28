@@ -6,6 +6,7 @@ import com.yrog.apijeuxolympiques.security.models.User;
 import com.yrog.apijeuxolympiques.security.repository.RoleRepository;
 import com.yrog.apijeuxolympiques.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,8 +32,21 @@ public class DataLoader {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Value("${admin.firstname}")
+    private String adminFirstName;
+
+    @Value("${admin.lastname}")
+    private String adminLastName;
+
+    @Value("${admin.username}")
+    private String adminUsername;
+
+    @Value("${admin.password}")
+    private String adminPassword;
+
     @Bean
     public CommandLineRunner loadData() {
+
         return args -> {
             // Charger les rôles si la table est vide
             if (roleRepository.count() == 0) {
@@ -46,7 +60,7 @@ public class DataLoader {
 
             } catch (UsernameNotFoundException e) {
                 // Si l'utilisateur 'admin' n'existe pas, le créer
-                User adminUser = new User( "admin", "admin", "admin@admin.com", passwordEncoder.encode("admin123@"));
+                User adminUser = new User( adminFirstName,  adminLastName,  adminUsername, passwordEncoder.encode( adminPassword));
 
                 // Ajouter le rôle admin
                 Role adminRole = roleRepository.findByName(ERole.ADMIN)

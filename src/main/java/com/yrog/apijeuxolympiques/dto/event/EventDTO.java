@@ -2,8 +2,7 @@ package com.yrog.apijeuxolympiques.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +28,13 @@ public class EventDTO {
     @Size(min = 1, max=50, message ="Le lieu doit avoir entre 1 et 50 caractères")
     private String eventLocation;
 
+    @NotNull(message = "Le nombre de places est obligatoire")
+    @Schema(description = "Nombre de places", example = "1000")
+    @NotNull
+    @Min(value = 1, message ="Le nombre doit être supérieur à 1")
+    @Max(value = 999999, message = "Le nombre doit être inferieur à 999999")
+    private Integer eventPlacesNumber;
+
     @NotNull(message = "La date et l'heur sont obligatoire")
     @Schema(description = "Titre de l'événement", example = "22/07/2024 20:00")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
@@ -36,10 +42,11 @@ public class EventDTO {
 
     public EventDTO() {}
 
-    public EventDTO(String eventTitle, String eventDescription, String eventLocation, LocalDateTime eventDateTime) {
+    public EventDTO(String eventTitle, String eventDescription, String eventLocation, Integer eventPlacesNumber, LocalDateTime eventDateTime) {
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
         this.eventLocation = eventLocation;
+        this.eventPlacesNumber = eventPlacesNumber;
         this.eventDateTime = eventDateTime;
     }
 

@@ -21,5 +21,11 @@ jo:
   jwtSecret: ${JWT_SECRET}
   jwtExpirationInMs: 86400000
 
+admin:
+  firstname: ${ADMIN_FIRSTNAME}
+  lastname: ${ADMIN_LASTNAME}
+  username: ${ADMIN_USERNAME}
+  password: ${ADMIN_PASSWORD}
+
 
 

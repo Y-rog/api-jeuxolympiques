@@ -17,6 +17,7 @@ public class EventMapperImpl implements EventMapper {
         eventDTO.setEventTitle(event.getEventTitle());
         eventDTO.setEventDescription(event.getEventDescription());
         eventDTO.setEventLocation(event.getEventLocation());
+        eventDTO.setEventPlacesNumber(event.getEventPlacesNumber());
         eventDTO.setEventDateTime(event.getEventDateTime());
 
         return eventDTO;
@@ -32,6 +33,7 @@ public class EventMapperImpl implements EventMapper {
         event.setEventTitle(eventDTO.getEventTitle());
         event.setEventDescription(eventDTO.getEventDescription());
         event.setEventLocation(eventDTO.getEventLocation());
+        event.setEventPlacesNumber(eventDTO.getEventPlacesNumber());
         event.setEventDateTime(eventDTO.getEventDateTime());
 
         return event;

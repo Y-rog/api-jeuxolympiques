@@ -26,16 +26,20 @@ public class Event {
     private String eventLocation;
 
     @NotNull
+    private Integer eventPlacesNumber;
+
+    @NotNull
     private LocalDateTime eventDateTime;
 
     public Event() {
 
     }
 
-    public Event(@NotNull String eventTitle, @NotNull String eventDescription, @NotNull String eventLocation, @NotNull LocalDateTime eventDateTime) {
+    public Event(@NotNull String eventTitle, @NotNull String eventDescription, @NotNull String eventLocation,@NotNull Integer eventPlacesNumber, @NotNull LocalDateTime eventDateTime) {
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
         this.eventLocation = eventLocation;
+        this.eventPlacesNumber = eventPlacesNumber;
         this.eventDateTime = eventDateTime;
     }
 

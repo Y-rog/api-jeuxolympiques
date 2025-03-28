@@ -1,30 +1,31 @@
 package com.yrog.apijeuxolympiques.security.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
-import java.util.Set;
 
 @Data
 public class SignupRequest {
 
-    @NotBlank
-    @Size(min = 3, max = 100)
+    @Schema(description = "Prénom", example = "Jean")
+    @Size(min = 2, max = 100, message = "Le prénom doit avoir entre 2 et 100 caractères")
+    @NotBlank(message = "Le prénom est obligatoire")
     private String firstname;
 
-    @NotBlank
-    @Size(min = 3, max = 100)
+    @Schema(description = "Nom", example = "Dupont")
+    @Size(min = 2, max = 100, message = "Le nom doit avoir entre 2 et 100 caractères")
+    @NotBlank(message = "Le nom est obligatoire")
     private String lastname;
 
-    @NotBlank
-    @Size(min = 3, max = 100)
-    @Email
+    @Schema(description = "Email", example = "jeandupont@mail.com")
+    @Size(min = 5, max = 100, message = "Le mail doit avoir entre 5 et 100 caractères")
+    @NotBlank(message = "Le mail est obligatoire")
+    @Email(message = "L'email doit être valide")
     private String username;
 
-    @NotBlank
+    @Schema(description = "Mot de passe", example = "jeanDupont123@")
+    @NotBlank(message = "Le mot de passe est obligatoire")
     @Size (min = 8, max = 40)
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", message = "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un caractère spécial")
     private String password;

@@ -87,7 +87,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/auth/changePassword").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/auth/register").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event").hasAuthority("ROLE_" + ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event").hasAuthority(ERole.ADMIN.name())
                         .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
