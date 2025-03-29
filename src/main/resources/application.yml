@@ -21,11 +21,14 @@ jo:
   jwtSecret: ${JWT_SECRET}
   jwtExpirationInMs: 86400000
 
+frontUrl: ${FRONT_URL}
+
 admin:
   firstname: ${ADMIN_FIRSTNAME}
   lastname: ${ADMIN_LASTNAME}
   username: ${ADMIN_USERNAME}
   password: ${ADMIN_PASSWORD}
+
 
 
 
