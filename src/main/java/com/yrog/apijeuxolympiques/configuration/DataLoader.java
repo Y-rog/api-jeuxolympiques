@@ -56,7 +56,7 @@ public class DataLoader {
 
             // Vérifier si l'utilisateur 'admin' existe
             try {
-                userDetailsService.loadUserByUsername("admin");  // Essaie de charger l'utilisateur 'admin'
+                userDetailsService.loadUserByUsername(adminUsername);  // Essaie de charger l'utilisateur 'admin'
 
             } catch (UsernameNotFoundException e) {
                 // Si l'utilisateur 'admin' n'existe pas, le créer
@@ -70,8 +70,6 @@ public class DataLoader {
 
                 // Sauvegarder l'utilisateur dans la base de données
                 userRepository.save(adminUser);
-
-                System.out.println("Admin user created with username: admin");
             }
         };
     }
