@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api-jeuxolympiques/auth")
-@CrossOrigin(origins = {"http://localhost:4200"})
 public class AuthController {
 
     @Autowired

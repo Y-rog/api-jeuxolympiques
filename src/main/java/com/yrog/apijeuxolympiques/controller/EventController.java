@@ -6,6 +6,7 @@ import com.yrog.apijeuxolympiques.security.models.Role;
 import com.yrog.apijeuxolympiques.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -20,8 +21,10 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api-jeuxolympiques/event")
-@CrossOrigin(origins = {"http://localhost:4200"})
 public class EventController {
+
+    private static final String frontUrl = "${FRONT_URL}";
+
 
     @Autowired
     private EventService eventService;
