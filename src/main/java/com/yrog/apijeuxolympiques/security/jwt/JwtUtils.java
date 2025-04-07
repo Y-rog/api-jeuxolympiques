@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtils {
@@ -25,6 +26,7 @@ public class JwtUtils {
 
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
+                .claim("roles", userPrincipal.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + jwtExpirationInMs))
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
@@ -57,5 +59,14 @@ public class JwtUtils {
         }
 
         return false;
+    }
+
+    // Extraire les rôles du token
+    public List<String> getRolesFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return (List<String>) claims.get("roles");
     }
 }

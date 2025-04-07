@@ -3,6 +3,7 @@ package com.yrog.apijeuxolympiques.configuration;
 import com.yrog.apijeuxolympiques.security.jwt.AuthEntryPointJwt;
 import com.yrog.apijeuxolympiques.security.jwt.AuthTokenFilter;
 import com.yrog.apijeuxolympiques.security.models.ERole;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -70,7 +72,7 @@ public class WebSecurityConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(frontUrl)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
 
@@ -90,10 +92,14 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/auth/register").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/api-jeuxolympiques/auth/me").permitAll()
                         .anyRequest().authenticated());
+
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http.cors(Customizer.withDefaults());
 
         return http.build();
     }
