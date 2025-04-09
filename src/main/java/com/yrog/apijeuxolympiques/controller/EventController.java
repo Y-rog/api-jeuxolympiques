@@ -50,10 +50,27 @@ public class EventController {
         return ResponseEntity.ok(events);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("event/{id}")
     public ResponseEntity<?> getEventById(@PathVariable Long id) {
         Event event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
     }
+
+    @PostMapping("/event/{id}/update")
+    public ResponseEntity<?> updateEventById(@PathVariable Long id, @Valid @RequestBody EventDTO eventDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        EventDTO updatedEvent = eventService.updateEventById(id, eventDTO); // Pass the ID to the service
+        return ResponseEntity.status(HttpStatus.OK).body(updatedEvent); // Return the updated event with status 200 (OK)
+    }
+
+
+
+
 
 }
