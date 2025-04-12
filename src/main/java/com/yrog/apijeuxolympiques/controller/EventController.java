@@ -2,15 +2,12 @@ package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
 import com.yrog.apijeuxolympiques.pojo.Event;
-import com.yrog.apijeuxolympiques.security.models.Role;
 import com.yrog.apijeuxolympiques.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -50,13 +47,13 @@ public class EventController {
         return ResponseEntity.ok(events);
     }
 
-    @GetMapping("event/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getEventById(@PathVariable Long id) {
         Event event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
     }
 
-    @PostMapping("/event/{id}/update")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateEventById(@PathVariable Long id, @Valid @RequestBody EventDTO eventDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream()
@@ -69,8 +66,15 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedEvent); // Return the updated event with status 200 (OK)
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteEventById(@PathVariable Long id) {
+        Event event = eventService.getEventById(id);
 
-
-
+        if (event != null) {
+            eventService.deleteEventById(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Événement non trouvé");
+    }
 
 }

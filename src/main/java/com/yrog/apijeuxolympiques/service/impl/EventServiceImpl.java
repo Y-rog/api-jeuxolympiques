@@ -7,11 +7,10 @@ import com.yrog.apijeuxolympiques.repository.EventRepository;
 import com.yrog.apijeuxolympiques.service.EventService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -56,4 +55,13 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toDTO(updatedEvent);
     }
 
+    @Override
+    public boolean deleteEventById(Long id) {
+        Optional<Event> event = eventRepository.findById(id);
+        if (event.isPresent()) {
+            eventRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }

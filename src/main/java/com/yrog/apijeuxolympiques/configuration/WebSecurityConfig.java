@@ -93,6 +93,9 @@ public class WebSecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event").hasAuthority(ERole.ADMIN.name())
                         .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/event/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api-jeuxolympiques/auth/me").permitAll()
                         .anyRequest().authenticated());
 
