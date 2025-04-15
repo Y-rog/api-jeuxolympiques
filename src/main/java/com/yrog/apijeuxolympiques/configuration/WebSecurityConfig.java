@@ -97,6 +97,16 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/event/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api-jeuxolympiques/auth/me").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/offers/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/offers").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/offer-categories/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
+
                         .anyRequest().authenticated());
 
 

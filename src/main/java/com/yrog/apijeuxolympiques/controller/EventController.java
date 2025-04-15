@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 @RequestMapping("api-jeuxolympiques/event")
 public class EventController {
 
-    private static final String frontUrl = "${FRONT_URL}";
-
 
     @Autowired
     private EventService eventService;
