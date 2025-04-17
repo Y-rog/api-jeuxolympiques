@@ -1,6 +1,7 @@
 package com.yrog.apijeuxolympiques.service;
 
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
+import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
 
 import java.util.List;
 
@@ -15,6 +16,9 @@ public interface OfferService {
     OfferDTO updateOffer(Long id, OfferDTO offerDTO);
 
     boolean deleteOffer(Long id);
+
+    List<OfferDetailDTO> getAllOffersDetail();
+
 }
 
 

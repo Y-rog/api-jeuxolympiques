@@ -1,6 +1,7 @@
 package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
+import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
 import com.yrog.apijeuxolympiques.service.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,12 @@ public class OfferController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOffer);
     }
 
-    @GetMapping
-    public ResponseEntity<List<OfferDTO>> getAllOffers() {
-        List<OfferDTO> offers = offerService.getAllOffers();
+    @GetMapping()
+    public ResponseEntity<List<OfferDetailDTO>> getAllOffersDetail() {
+        List<OfferDetailDTO> offers = offerService.getAllOffersDetail();
         return ResponseEntity.ok(offers);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<OfferDTO> getOfferById(@PathVariable Long id) {

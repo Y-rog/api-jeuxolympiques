@@ -1,6 +1,7 @@
 package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
+import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
 import com.yrog.apijeuxolympiques.mapper.impl.OfferMapperImpl;
 import com.yrog.apijeuxolympiques.pojo.Event;
 import com.yrog.apijeuxolympiques.pojo.Offer;
@@ -12,6 +13,7 @@ import com.yrog.apijeuxolympiques.service.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -101,6 +103,27 @@ public class OfferServiceImpl implements OfferService {
         }
         return false;
     }
+
+    @Override
+    public List<OfferDetailDTO> getAllOffersDetail() {
+        List<Offer> offers = offerRepository.findAll();
+
+        return offers.stream()
+                .map(offer -> {
+                    OfferDetailDTO dto = new OfferDetailDTO();
+                    dto.setPrice(offer.getPrice());
+                    dto.setAvailability(offer.isAvailability());
+                    dto.setEventId(offer.getEvent().getEventId());
+                    dto.setEventTitle(offer.getEvent().getEventTitle());
+                    dto.setEventLocation(offer.getEvent().getEventLocation());
+                    dto.setEventDateTime(offer.getEvent().getEventDateTime());
+                    dto.setOfferCategoryId(offer.getOfferCategory().getCategoryId());
+                    dto.setOfferCategoryTitle(offer.getOfferCategory().getTitle());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
 }
 
 
