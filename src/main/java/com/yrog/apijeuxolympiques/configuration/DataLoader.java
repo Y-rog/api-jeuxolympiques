@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,8 +132,9 @@ public class DataLoader {
                     OfferCategory category = categories.get(random.nextInt(categories.size()));
 
                     // Logique de prix en fonction du nombre de places
-                    double basePricePerSeat = 15 + random.nextInt(10); // entre 15€ et 25€ par place
-                    double calculatedPrice = basePricePerSeat * category.getPlacesPerOffer();
+                    BigDecimal basePricePerSeat = BigDecimal.valueOf(15 + random.nextInt(10)); // entre 15€ et 25€ par place
+                    BigDecimal calculatedPrice = basePricePerSeat.multiply(BigDecimal.valueOf(category.getPlacesPerOffer()));
+
 
                     offer.setAvailability(true); // entre 30 et 100
                     offer.setPrice(calculatedPrice);

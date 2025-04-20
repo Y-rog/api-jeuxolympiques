@@ -56,11 +56,9 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public List<OfferDTO> getAllOffers() {
+    public List<Offer> getAllOffers() {
         List<Offer> offers = offerRepository.findAll();
-        return offers.stream()
-                .map(offerMapper::toDTO)
-                .collect(Collectors.toList());
+        return offers.stream().toList();
     }
 
     @Override
@@ -111,6 +109,7 @@ public class OfferServiceImpl implements OfferService {
         return offers.stream()
                 .map(offer -> {
                     OfferDetailDTO dto = new OfferDetailDTO();
+                    dto.setOfferId(offer.getOfferId());
                     dto.setPrice(offer.getPrice());
                     dto.setAvailability(offer.isAvailability());
                     dto.setEventId(offer.getEvent().getEventId());

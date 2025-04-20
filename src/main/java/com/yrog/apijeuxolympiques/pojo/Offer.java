@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Getter
 @Setter
@@ -13,7 +15,7 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long offerId;  // Identifiant unique de l'offre
 
-    private double price;
+    private BigDecimal price;
     private boolean availability;
 
     @ManyToOne

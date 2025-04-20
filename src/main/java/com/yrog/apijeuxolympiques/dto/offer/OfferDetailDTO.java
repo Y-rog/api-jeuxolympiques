@@ -1,10 +1,14 @@
 package com.yrog.apijeuxolympiques.dto.offer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,9 +16,13 @@ import java.time.LocalDateTime;
 @Schema(description = "Détails enrichis d'une offre incluant les infos de l'événement et de la catégorie")
 public class OfferDetailDTO {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long offerId;
+
     @Schema(description = "Prix de l'offre", example = "49.99")
     @NotNull(message = "Le prix ne peut pas être nul")
-    private Double price;
+    private BigDecimal price;
 
     @Schema(description = "Disponibilité de l'offre", example = "true")
     private boolean availability;

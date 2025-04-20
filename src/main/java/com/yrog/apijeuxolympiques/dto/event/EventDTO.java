@@ -42,12 +42,4 @@ public class EventDTO {
 
     public EventDTO() {}
 
-    public EventDTO(String eventTitle, String eventDescription, String eventLocation, Integer eventPlacesNumber, LocalDateTime eventDateTime) {
-        this.eventTitle = eventTitle;
-        this.eventDescription = eventDescription;
-        this.eventLocation = eventLocation;
-        this.eventPlacesNumber = eventPlacesNumber;
-        this.eventDateTime = eventDateTime;
-    }
-
 }

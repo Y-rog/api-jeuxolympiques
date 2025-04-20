@@ -106,6 +106,9 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
                         .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers("/api-jeuxolympiques/cart").permitAll()
+                        .requestMatchers("/api-jeuxolympiques/cart/**").permitAll()
+                        .requestMatchers("/api-jeuxolympiques/cartItem/**").permitAll()
 
                         .anyRequest().authenticated());
 

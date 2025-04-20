@@ -2,6 +2,7 @@ package com.yrog.apijeuxolympiques.service;
 
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
+import com.yrog.apijeuxolympiques.pojo.Offer;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ public interface OfferService {
 
     OfferDTO createOffer(OfferDTO offerDTO);
 
-    List<OfferDTO> getAllOffers();
+    List<Offer> getAllOffers();
 
     OfferDTO getOfferById(Long id);
 
