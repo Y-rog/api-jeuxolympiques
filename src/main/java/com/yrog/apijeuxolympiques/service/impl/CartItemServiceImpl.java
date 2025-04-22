@@ -13,9 +13,12 @@ import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.security.repository.UserRepository;
 import com.yrog.apijeuxolympiques.service.CartItemService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -25,10 +28,11 @@ public class CartItemServiceImpl implements CartItemService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final CartMapper cartMapper;
     private final CartItemMapper cartItemMapper;
     private final OfferRepository offerRepository;
-    private final UserRepository userRepository;
+
+    @Value("${cart.item.expiration-duration}")
+    private int expirationDuration;
 
     public CartItemServiceImpl(
             CartRepository cartRepository,
@@ -39,10 +43,8 @@ public class CartItemServiceImpl implements CartItemService {
             UserRepository userRepository) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
-        this.cartMapper = cartMapper;
         this.cartItemMapper = cartItemMapper;
         this.offerRepository = offerRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -62,12 +64,15 @@ public class CartItemServiceImpl implements CartItemService {
         Offer offer = offerRepository.findById(request.getOfferId())
                 .orElseThrow(() -> new EntityNotFoundException("Offer not found"));
 
+        Instant expirationTime = Instant.now().plus(Duration.ofMinutes(expirationDuration));
+
         CartItem item = new CartItem();
         item.setCart(cart);
         item.setOffer(offer);
         item.setQuantity(request.getQuantity());
         item.setPriceAtPurchase(request.getPriceAtPurchase());
         item.setQrCode(UUID.randomUUID().toString());
+        item.setExpirationTime(expirationTime);
 
         cartItemRepository.save(item);
 

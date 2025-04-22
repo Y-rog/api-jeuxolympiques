@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,6 +32,8 @@ public class CartItem {
     private Offer offer;
 
     private LocalDateTime addedAt;
+
+    private Instant expirationTime;
 
     @PrePersist
     protected void onAdd() {

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,5 +18,6 @@ public class CartItemResponse {
     private Long offerId;
     private Long cartId;
     private LocalDateTime addedAt;
+    private Instant ExpirationTime;
 
 }

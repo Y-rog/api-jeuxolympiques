@@ -30,5 +30,6 @@ admin:
   password: ${ADMIN_PASSWORD}
 
 
-
-
+cart:
+  item:
+    expiration-duration: ${ITEM_EXPIRATION_DURATION}
