@@ -9,11 +9,12 @@ import com.yrog.apijeuxolympiques.pojo.OfferCategory;
 import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
+import com.yrog.apijeuxolympiques.service.EventService;
 import com.yrog.apijeuxolympiques.service.OfferService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +33,9 @@ public class OfferServiceImpl implements OfferService {
 
     @Autowired
     private OfferMapperImpl offerMapper;
+
+    @Autowired
+    private EventService eventService;
 
     @Override
     public OfferDTO createOffer(OfferDTO offerDTO) {
@@ -122,6 +126,62 @@ public class OfferServiceImpl implements OfferService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean checkAvailabilityForOffer(Long offerId) {
+        // Récupère l'offre par son ID
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new RuntimeException("Offer not found"));
+
+        // Récupère l'événement associé à l'offre
+        Event event = offer.getEvent();
+
+        // Récupère la catégorie de l'offre
+        OfferCategory offerCategory = offer.getOfferCategory();
+        int placesPerOffer = offerCategory.getPlacesPerOffer();
+
+        // Calcule le nombre de places encore disponibles pour l'événement
+        int availablePlaces = eventService.getAvailablePlacesForEvent(event.getEventId());
+
+        // Détermine si l'offre est disponible
+        boolean isAvailable = availablePlaces >= placesPerOffer;
+
+        // Met à jour la disponibilité de l'offre et la sauvegarde
+        offer.setAvailability(isAvailable);
+        offerRepository.save(offer);
+
+        return isAvailable;
+    }
+
+    @Override
+    public void restoreAvailability(Long offerId) {
+        System.out.println("Tentative de récupération de l'offre avec l'ID : " + offerId);
+
+        // Chercher l'offre
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new EntityNotFoundException("Offre non trouvée avec l'ID : " + offerId));
+
+        // Vérifier l'état de l'offre avant la modification
+        System.out.println("Offre trouvée: " + offer.getOfferId() + ", Disponibilité actuelle: " + offer.isAvailability());
+
+        // S'assurer que availability est un type boolean pur
+        boolean currentAvailability = offer.isAvailability();
+        if (!currentAvailability) {
+            // Changer la disponibilité uniquement si elle est actuellement à false
+            offer.setAvailability(true);
+            System.out.println("Disponibilité de l'offre mise à TRUE");
+        } else {
+            System.out.println("La disponibilité est déjà TRUE, aucune mise à jour nécessaire");
+        }
+
+        // Sauvegarder l'offre après modification
+        offerRepository.save(offer);
+
+        // Vérifier après la sauvegarde
+        System.out.println("Disponibilité de l'offre après restauration : " + offer.isAvailability());
+    }
+
+
 
 }
 

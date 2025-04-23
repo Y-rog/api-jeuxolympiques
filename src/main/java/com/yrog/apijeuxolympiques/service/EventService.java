@@ -18,4 +18,6 @@ public interface EventService {
     List<Event> getAllEvents();
 
     boolean deleteEventById(Long id);
+
+    int getAvailablePlacesForEvent(Long eventId);
 }

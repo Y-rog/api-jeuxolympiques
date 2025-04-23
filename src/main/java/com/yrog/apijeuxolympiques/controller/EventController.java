@@ -75,4 +75,9 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Événement non trouvé");
     }
 
+    @GetMapping("/{eventId}/available-places")
+    public int getAvailablePlaces(@PathVariable Long eventId) {
+        return eventService.getAvailablePlacesForEvent(eventId);
+    }
+
 }

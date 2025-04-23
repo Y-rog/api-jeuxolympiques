@@ -13,7 +13,7 @@ public class CartItemUpdateRequest {
 
     @NotNull(message = "La quantité est obligatoire")
     @Min(value = 1, message = "La quantité doit être au minimum de 1")
-    @Max(value = 100, message = "La quantité maximale autorisée est 100")
+    @Max(value = 5, message = "La quantité maximale autorisée est 5")
     @Schema(description = "Quantité choisie de cette offre", example = "2")
     private Integer quantity;
 }

@@ -58,6 +58,21 @@ public class OfferController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    // Endpoint pour vérifier la disponibilité d'une offre
+    @GetMapping("/{offerId}/check-availability")
+    public boolean checkAvailability(@PathVariable Long offerId) {
+        return offerService.checkAvailabilityForOffer(offerId);
+    }
+
+    //Endpoint pour restaurer la disponibilité d'une offre
+    @PutMapping("/{id}/restore-availability")
+    public ResponseEntity<Void> restoreOfferAvailability(@PathVariable Long id) {
+        offerService.restoreAvailability(id);
+        return ResponseEntity.ok().build();
+    }
+
+
 }
 
 

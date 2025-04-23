@@ -102,9 +102,9 @@ public class DataLoader {
             // === EVENEMENTS ===
             if (eventRepository.count() == 0) {
                 List<Event> events = List.of(
-                        new Event("Finale Football", "Match pour la médaille d'or", "Stade de France", 80000, LocalDateTime.of(2024, 7, 30, 20, 0)),
-                        new Event("Demi-finale Basketball", "Les meilleurs s'affrontent", "Stade de Lille", 15000, LocalDateTime.of(2024, 7, 28, 18, 0)),
-                        new Event("Finale Natation", "Courses finales", "Centre Aquatique", 5000, LocalDateTime.of(2024, 7, 25, 19, 0)),
+                        new Event("Finale Football", "Match pour la médaille d'or", "Stade de France", 4, LocalDateTime.of(2024, 7, 30, 20, 0)),
+                        new Event("Demi-finale Basketball", "Les meilleurs s'affrontent", "Stade de Lille", 15, LocalDateTime.of(2024, 7, 28, 18, 0)),
+                        new Event("Finale Natation", "Courses finales", "Centre Aquatique", 50, LocalDateTime.of(2024, 7, 25, 19, 0)),
                         new Event("Escrime par équipe", "Phase finale", "Grand Palais", 3000, LocalDateTime.of(2024, 7, 26, 17, 0)),
                         new Event("Gymnastique", "Compétition finale", "Bercy Arena", 10000, LocalDateTime.of(2024, 7, 24, 16, 0)),
                         new Event("Volley Ball", "Quart de finale", "Stade Pierre Mauroy", 12000, LocalDateTime.of(2024, 7, 23, 20, 0)),

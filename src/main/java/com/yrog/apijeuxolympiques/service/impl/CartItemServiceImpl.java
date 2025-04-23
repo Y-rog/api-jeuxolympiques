@@ -2,6 +2,7 @@ package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
+import com.yrog.apijeuxolympiques.dto.cartItem.CartItemUpdateRequest;
 import com.yrog.apijeuxolympiques.mapper.CartItemMapper;
 import com.yrog.apijeuxolympiques.mapper.CartMapper;
 import com.yrog.apijeuxolympiques.pojo.Cart;
@@ -12,6 +13,7 @@ import com.yrog.apijeuxolympiques.repository.CartRepository;
 import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.security.repository.UserRepository;
 import com.yrog.apijeuxolympiques.service.CartItemService;
+import com.yrog.apijeuxolympiques.service.OfferService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class CartItemServiceImpl implements CartItemService {
     private final CartItemRepository cartItemRepository;
     private final CartItemMapper cartItemMapper;
     private final OfferRepository offerRepository;
+    private final OfferService offerService;
 
     @Value("${cart.item.expiration-duration}")
     private int expirationDuration;
@@ -37,14 +40,14 @@ public class CartItemServiceImpl implements CartItemService {
     public CartItemServiceImpl(
             CartRepository cartRepository,
             CartItemRepository cartItemRepository,
-            CartMapper cartMapper,
             CartItemMapper cartItemMapper,
             OfferRepository offerRepository,
-            UserRepository userRepository) {
+            OfferService offerService) {
         this.cartRepository = cartRepository;
         this.cartItemRepository = cartItemRepository;
         this.cartItemMapper = cartItemMapper;
         this.offerRepository = offerRepository;
+        this.offerService = offerService;
     }
 
     @Override
@@ -58,36 +61,37 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItemResponse addItemToCart(Long cartId, CartItemCreateRequest request) {
+        // Vérifie si le panier existe
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
 
+        // Récupère l'offre
         Offer offer = offerRepository.findById(request.getOfferId())
                 .orElseThrow(() -> new EntityNotFoundException("Offer not found"));
 
-        Instant expirationTime = Instant.now().plus(Duration.ofMinutes(expirationDuration));
-
+        // Crée un nouvel item
         CartItem item = new CartItem();
         item.setCart(cart);
         item.setOffer(offer);
         item.setQuantity(request.getQuantity());
         item.setPriceAtPurchase(request.getPriceAtPurchase());
         item.setQrCode(UUID.randomUUID().toString());
-        item.setExpirationTime(expirationTime);
+        item.setExpirationTime(Instant.now().plus(Duration.ofMinutes(expirationDuration)));
 
-        cartItemRepository.save(item);
-
+        // Ajoute l’item à la liste du panier AVANT de sauver
         cart.getItems().add(item);
         cart.setUpdatedAt(LocalDateTime.now());
-        cart.setAmount(cart.getItems().stream()
-                .map(i -> i.getPriceAtPurchase().multiply(BigDecimal.valueOf(i.getQuantity())))  // Multiplier le prix par la quantité
-                .reduce(BigDecimal.ZERO, BigDecimal::add)  // Additionner toutes les valeurs obtenues
-        );
 
+        // Calcule le nouveau montant total
+        cart.setAmount(cart.getItems().stream()
+                .map(i -> i.getPriceAtPurchase().multiply(BigDecimal.valueOf(i.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+
+        // Sauvegarde du panier (et cascade les items)
         cartRepository.save(cart);
 
-
         // Retour DTO
-        return cartItemMapper.toResponse(item); // ou map manuellement comme montré au-dessus
+        return cartItemMapper.toResponse(item);
     }
 
 
@@ -111,5 +115,33 @@ public class CartItemServiceImpl implements CartItemService {
 
         // Sauvegarder le panier mis à jour
         cartRepository.save(cart);
+
     }
+
+    @Override
+    public CartItemResponse updateItemQuantity(Long cartId, Long itemId, CartItemUpdateRequest request) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Panier non trouvé avec l'id " + cartId));
+
+        CartItem cartItem = cartItemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("Article non trouvé avec l'id " + itemId));
+
+        if (!cartItem.getCart().getCartId().equals(cartId)) {
+            throw new RuntimeException("Cet article n'appartient pas au panier spécifié.");
+        }
+
+        int newQuantity = request.getQuantity();
+
+        if (newQuantity <= 0) {
+            cartItemRepository.delete(cartItem);
+            return null;
+        }
+
+        cartItem.setQuantity(newQuantity);
+        CartItem updatedItem = cartItemRepository.save(cartItem);
+
+        return cartItemMapper.toResponse(updatedItem);
+    }
+
 }
+

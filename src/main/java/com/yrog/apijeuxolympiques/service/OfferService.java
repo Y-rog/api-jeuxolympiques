@@ -20,6 +20,9 @@ public interface OfferService {
 
     List<OfferDetailDTO> getAllOffersDetail();
 
+    boolean checkAvailabilityForOffer(Long offerId);
+
+    void restoreAvailability(Long offerId);
 }
 
 

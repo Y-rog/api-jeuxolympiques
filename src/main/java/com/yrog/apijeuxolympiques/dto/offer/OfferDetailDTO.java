@@ -47,6 +47,9 @@ public class OfferDetailDTO {
     @Schema(description = "Titre de la catégorie d'offre", example = "Duo")
     private String offerCategoryTitle;
 
+    @Schema(description = "Nombre de places par offre", example = "2")
+    private Integer offerCategoryPlacesPerOffer;
+
     public OfferDetailDTO() {}
 }
 

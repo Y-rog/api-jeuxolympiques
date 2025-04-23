@@ -2,12 +2,17 @@ package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
 import com.yrog.apijeuxolympiques.mapper.EventMapper;
+import com.yrog.apijeuxolympiques.pojo.CartItem;
 import com.yrog.apijeuxolympiques.pojo.Event;
+import com.yrog.apijeuxolympiques.repository.CartItemRepository;
+import com.yrog.apijeuxolympiques.repository.CartRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
 import com.yrog.apijeuxolympiques.service.EventService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.yrog.apijeuxolympiques.pojo.Cart;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +26,13 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private EventMapper eventMapper;
+
+    @Autowired
+    private CartRepository cartRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     @Override
     public EventDTO createEvent(EventDTO eventDTO) {
@@ -64,4 +76,29 @@ public class EventServiceImpl implements EventService {
         }
         return false;
     }
+
+    @Override
+    public int getAvailablePlacesForEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        List<Cart> carts = cartRepository.findByItems_Offer_Event_EventId(eventId);
+
+        int reservedPlaces = 0;
+
+        for (Cart cart : carts) {
+            for (CartItem cartItem : cart.getItems()) {
+                if (cartItem.getOffer().getEvent().getEventId().equals(eventId)) {
+                    int quantity = cartItem.getQuantity();
+                    int placesPerOffer = cartItem.getOffer().getOfferCategory().getPlacesPerOffer();
+                    reservedPlaces += quantity * placesPerOffer;
+                }
+            }
+        }
+
+        return event.getEventPlacesNumber() - reservedPlaces;
+    }
+
+
+
 }
