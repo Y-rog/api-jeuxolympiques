@@ -44,9 +44,7 @@ public class CartItemController {
 
     // Ajouter un élément dans le panier
     @PostMapping
-    public ResponseEntity<CartItemResponse> addItem(
-            @PathVariable Long cartId,
-            @RequestBody @Valid CartItemCreateRequest request) {
+    public ResponseEntity<CartItemResponse> addItem(@PathVariable Long cartId, @RequestBody @Valid CartItemCreateRequest request) {
 
         CartItemResponse response = cartItemService.addItemToCart(cartId, request);
         return ResponseEntity.ok(response);  // Renvoie le CartItemResponse avec un code HTTP 200

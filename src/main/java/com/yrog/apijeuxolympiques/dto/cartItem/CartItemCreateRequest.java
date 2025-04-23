@@ -15,10 +15,6 @@ public class CartItemCreateRequest {
     @Schema(description = "Identifiant de l’offre liée à cet élément", example = "3")
     private Long offerId;
 
-    @NotNull(message = "L'identifiant du panier est obligatoire")
-    @Schema(description = "Identifiant du panier  liée à cet élément", example = "1")
-    private Long cartId;
-
     @NotNull(message = "La quantité est obligatoire")
     @Min(value = 1, message = "La quantité doit être au minimum de 1")
     @Max(value = 5, message = "La quantité maximale autorisée est 5")
