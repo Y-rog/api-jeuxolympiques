@@ -42,8 +42,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Event getEventById(Long eventId) {
-        return this.eventRepository.findById(eventId).orElse(null);
+    public Optional<Event> getEventById(Long eventId) {
+        return this.eventRepository.findById(eventId);
     }
 
     @Override

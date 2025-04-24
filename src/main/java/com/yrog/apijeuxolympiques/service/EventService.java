@@ -5,6 +5,7 @@ import com.yrog.apijeuxolympiques.pojo.Event;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface EventService {
@@ -13,7 +14,7 @@ public interface EventService {
 
     EventDTO updateEventById(@PathVariable Long id, EventDTO eventDTO);
 
-    Event getEventById(Long eventId);
+    Optional<Event> getEventById(Long id);
 
     List<Event> getAllEvents();
 

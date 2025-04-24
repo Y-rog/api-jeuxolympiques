@@ -46,10 +46,12 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEventById(@PathVariable Long id) {
-        Event event = eventService.getEventById(id);
-        return ResponseEntity.ok(event);
+    public ResponseEntity<Event> getEventById(@PathVariable Long id) {
+        return eventService.getEventById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEventById(@PathVariable Long id, @Valid @RequestBody EventDTO eventDTO, BindingResult bindingResult) {
@@ -65,15 +67,16 @@ public class EventController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteEventById(@PathVariable Long id) {
-        Event event = eventService.getEventById(id);
-
-        if (event != null) {
-            eventService.deleteEventById(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<Void> deleteEventById(@PathVariable Long id) {
+        boolean deleted = eventService.deleteEventById(id); // Utilisation du service pour supprimer l'événement
+        if (deleted) {
+            return ResponseEntity.noContent().build(); // 204 No Content si suppression réussie
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Événement non trouvé");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found si événement introuvable
     }
+
+
+
 
     @GetMapping("/{eventId}/available-places")
     public int getAvailablePlaces(@PathVariable Long eventId) {
