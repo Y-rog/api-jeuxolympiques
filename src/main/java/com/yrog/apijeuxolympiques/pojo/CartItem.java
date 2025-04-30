@@ -17,8 +17,6 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
 
-    private Integer quantity;
-
     private String qrCode;
 
     private BigDecimal priceAtPurchase;
@@ -38,10 +36,6 @@ public class CartItem {
     @PrePersist
     protected void onAdd() {
         addedAt = LocalDateTime.now();
-    }
-
-    public BigDecimal getItemTotal() {
-        return priceAtPurchase.multiply(BigDecimal.valueOf(quantity));
     }
 
     public CartItem() {}

@@ -21,4 +21,5 @@ public interface EventService {
     boolean deleteEventById(Long id);
 
     int getAvailablePlacesForEvent(Long eventId);
+
 }

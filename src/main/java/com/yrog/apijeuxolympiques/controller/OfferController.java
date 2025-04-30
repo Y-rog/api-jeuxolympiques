@@ -61,17 +61,15 @@ public class OfferController {
 
     // Endpoint pour vérifier la disponibilité d'une offre
     @GetMapping("/{offerId}/check-availability")
-    public boolean checkAvailability(@PathVariable Long offerId) {
-        return offerService.checkAvailabilityForOffer(offerId);
+    public boolean checkAvailability(@PathVariable Long offerId, @RequestParam int requestedQuantity) {
+        return offerService.checkAvailabilityForOffer(offerId, requestedQuantity);
     }
 
-    //Endpoint pour restaurer la disponibilité d'une offre
-    @PutMapping("/{id}/restore-availability")
-    public ResponseEntity<Void> restoreOfferAvailability(@PathVariable Long id) {
-        offerService.restoreAvailability(id);
+    @GetMapping("/update-offers-availability/event/{eventId}")
+    public ResponseEntity<Void> updateOffersAvailabilityByEvent(@PathVariable Long eventId) {
+        offerService.updateOffersAvailabilityByEvent(eventId);
         return ResponseEntity.ok().build();
     }
-
 
 }
 

@@ -4,18 +4,23 @@ import com.yrog.apijeuxolympiques.dto.event.EventDTO;
 import com.yrog.apijeuxolympiques.mapper.EventMapper;
 import com.yrog.apijeuxolympiques.pojo.CartItem;
 import com.yrog.apijeuxolympiques.pojo.Event;
-import com.yrog.apijeuxolympiques.repository.CartItemRepository;
+import com.yrog.apijeuxolympiques.pojo.Offer;
 import com.yrog.apijeuxolympiques.repository.CartRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
+import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.service.EventService;
+import com.yrog.apijeuxolympiques.service.OfferService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.yrog.apijeuxolympiques.pojo.Cart;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 
 @Service
@@ -29,9 +34,6 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private CartRepository cartRepository;
-
-    @Autowired
-    private CartItemRepository cartItemRepository;
 
 
     @Override
@@ -89,16 +91,14 @@ public class EventServiceImpl implements EventService {
         for (Cart cart : carts) {
             for (CartItem cartItem : cart.getItems()) {
                 if (cartItem.getOffer().getEvent().getEventId().equals(eventId)) {
-                    int quantity = cartItem.getQuantity();
                     int placesPerOffer = cartItem.getOffer().getOfferCategory().getPlacesPerOffer();
-                    reservedPlaces += quantity * placesPerOffer;
+                    reservedPlaces += placesPerOffer;
                 }
             }
         }
 
         return event.getEventPlacesNumber() - reservedPlaces;
     }
-
 
 
 }

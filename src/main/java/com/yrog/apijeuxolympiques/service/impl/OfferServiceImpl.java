@@ -11,13 +11,16 @@ import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
 import com.yrog.apijeuxolympiques.service.EventService;
 import com.yrog.apijeuxolympiques.service.OfferService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class OfferServiceImpl implements OfferService {
@@ -128,7 +131,8 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public boolean checkAvailabilityForOffer(Long offerId) {
+    @Transactional
+    public boolean checkAvailabilityForOffer(Long offerId, int requestedQuantity) {
         // Récupère l'offre par son ID
         Offer offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new RuntimeException("Offer not found"));
@@ -140,49 +144,54 @@ public class OfferServiceImpl implements OfferService {
         OfferCategory offerCategory = offer.getOfferCategory();
         int placesPerOffer = offerCategory.getPlacesPerOffer();
 
+        // Calcule le nombre total de places nécessaires pour la quantité demandée
+        int placesRequired = requestedQuantity * placesPerOffer;
+
         // Calcule le nombre de places encore disponibles pour l'événement
         int availablePlaces = eventService.getAvailablePlacesForEvent(event.getEventId());
 
-        // Détermine si l'offre est disponible
-        boolean isAvailable = availablePlaces >= placesPerOffer;
+        // Détermine si l'offre est disponible (suffisamment de places)
+        boolean isAvailable = availablePlaces >= placesRequired;
 
-        // Met à jour la disponibilité de l'offre et la sauvegarde
-        offer.setAvailability(isAvailable);
-        offerRepository.save(offer);
+        // Met à jour la disponibilité de l'offre et la sauvegarde si nécessaire
+        if (offer.isAvailability() != isAvailable) {
+            offer.setAvailability(isAvailable);
+            offerRepository.save(offer);
+        }
 
         return isAvailable;
     }
 
     @Override
-    public void restoreAvailability(Long offerId) {
-        System.out.println("Tentative de récupération de l'offre avec l'ID : " + offerId);
+    @Transactional
+    public void updateOffersAvailabilityByEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,"Événement non trouvé avec l'ID : " + eventId));
 
-        // Chercher l'offre
-        Offer offer = offerRepository.findById(offerId)
-                .orElseThrow(() -> new EntityNotFoundException("Offre non trouvée avec l'ID : " + offerId));
+        int availablePlaces = eventService.getAvailablePlacesForEvent(eventId);
+        int eventCapacity = event.getEventPlacesNumber();
 
-        // Vérifier l'état de l'offre avant la modification
-        System.out.println("Offre trouvée: " + offer.getOfferId() + ", Disponibilité actuelle: " + offer.isAvailability());
+        List<Offer> offers = offerRepository.getAllOffersByEventEventId(event.getEventId());
 
-        // S'assurer que availability est un type boolean pur
-        boolean currentAvailability = offer.isAvailability();
-        if (!currentAvailability) {
-            // Changer la disponibilité uniquement si elle est actuellement à false
-            offer.setAvailability(true);
-            System.out.println("Disponibilité de l'offre mise à TRUE");
-        } else {
-            System.out.println("La disponibilité est déjà TRUE, aucune mise à jour nécessaire");
+        for (Offer offer : offers) {
+            int placesPerOffer = offer.getOfferCategory().getPlacesPerOffer();
+
+            boolean isAvailable;
+
+            // Cas où l'offre demande plus que la capacité totale de l'événement → jamais disponible
+            if (placesPerOffer > eventCapacity) {
+                isAvailable = false;
+            } else {
+                // Sinon : disponible si suffisamment de places restantes
+                isAvailable = availablePlaces >= placesPerOffer;
+            }
+
+            if (offer.isAvailability() != isAvailable) {
+                offer.setAvailability(isAvailable);
+                offerRepository.save(offer);
+            }
         }
-
-        // Sauvegarder l'offre après modification
-        offerRepository.save(offer);
-
-        // Vérifier après la sauvegarde
-        System.out.println("Disponibilité de l'offre après restauration : " + offer.isAvailability());
     }
-
-
-
 }
 
 

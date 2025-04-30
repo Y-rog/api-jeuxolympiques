@@ -15,12 +15,6 @@ public class CartItemCreateRequest {
     @Schema(description = "Identifiant de l’offre liée à cet élément", example = "3")
     private Long offerId;
 
-    @NotNull(message = "La quantité est obligatoire")
-    @Min(value = 1, message = "La quantité doit être au minimum de 1")
-    @Max(value = 5, message = "La quantité maximale autorisée est 5")
-    @Schema(description = "Quantité choisie de cette offre", example = "2")
-    private Integer quantity;
-
     @DecimalMin(value = "0.0", inclusive = true, message = "Le prix doit être positif")
     @Schema(description = "Prix de l’offre au moment de l’achat", example = "24.99")
     private BigDecimal priceAtPurchase;

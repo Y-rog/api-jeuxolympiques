@@ -2,7 +2,6 @@ package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
-import com.yrog.apijeuxolympiques.dto.cartItem.CartItemUpdateRequest;
 import com.yrog.apijeuxolympiques.service.CartItemService;
 import com.yrog.apijeuxolympiques.service.CartService;
 import jakarta.validation.Valid;
@@ -50,13 +49,5 @@ public class CartItemController {
         return ResponseEntity.ok(response);  // Renvoie le CartItemResponse avec un code HTTP 200
     }
 
-    @PutMapping("/{cartItemId}")
-    public ResponseEntity<?> updateItemQuantity(@PathVariable Long cartId,
-                                                @PathVariable Long cartItemId,
-                                                @RequestBody CartItemUpdateRequest request) {
-
-        CartItemResponse updatedItem = cartItemService.updateItemQuantity(cartId, cartItemId, request);
-        return ResponseEntity.ok(updatedItem);
-    }
 }
 

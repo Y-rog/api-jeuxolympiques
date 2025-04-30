@@ -3,6 +3,7 @@ package com.yrog.apijeuxolympiques.service;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
 import com.yrog.apijeuxolympiques.pojo.Offer;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,9 +21,11 @@ public interface OfferService {
 
     List<OfferDetailDTO> getAllOffersDetail();
 
-    boolean checkAvailabilityForOffer(Long offerId);
+    @Transactional
+    void updateOffersAvailabilityByEvent(Long eventId);
 
-    void restoreAvailability(Long offerId);
+    @Transactional
+    boolean checkAvailabilityForOffer(Long offerId, int requestedQuantity);
 }
 
 

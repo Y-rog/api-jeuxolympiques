@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class CartItemResponse {
 
     private Long cartItemId;
-    private Integer quantity;
     private String qrcode;
     private BigDecimal priceAtPurchase;
     private Long offerId;

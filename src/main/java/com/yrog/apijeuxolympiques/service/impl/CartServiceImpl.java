@@ -121,11 +121,12 @@ public class CartServiceImpl implements CartService {
 
     public void updateCartAmount(Cart cart) {
         BigDecimal total = cart.getItems().stream()
-                .map(item -> item.getPriceAtPurchase().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .map(item -> item.getPriceAtPurchase())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         cart.setAmount(total);
     }
+
 
 
 

@@ -19,7 +19,6 @@ public class CartItemMapperImpl implements CartItemMapper {
         if (cartItem == null) return null;
 
         CartItemCreateRequest dto = new CartItemCreateRequest();
-        dto.setQuantity(cartItem.getQuantity());
         dto.setPriceAtPurchase(cartItem.getPriceAtPurchase());
         dto.setOfferId(cartItem.getOffer().getOfferId());
 
@@ -31,7 +30,6 @@ public class CartItemMapperImpl implements CartItemMapper {
         if (dto == null) return null;
 
         CartItem entity = new CartItem();
-        entity.setQuantity(dto.getQuantity());
         entity.setPriceAtPurchase(dto.getPriceAtPurchase());
 
         Offer offer = new Offer();
@@ -47,7 +45,6 @@ public class CartItemMapperImpl implements CartItemMapper {
 
         CartItemResponse response = new CartItemResponse();
         response.setCartItemId(item.getCartItemId());
-        response.setQuantity(item.getQuantity());
         response.setQrcode(item.getQrCode());
         response.setPriceAtPurchase(item.getPriceAtPurchase());
         response.setOfferId(item.getOffer() != null ? item.getOffer().getOfferId() : null);
@@ -81,10 +78,4 @@ public class CartItemMapperImpl implements CartItemMapper {
                 })
                 .collect(Collectors.toList());
     }
-
-
-
-
 }
-
-
