@@ -2,6 +2,7 @@ package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
+import com.yrog.apijeuxolympiques.enums.CartStatus;
 import com.yrog.apijeuxolympiques.mapper.CartItemMapper;
 import com.yrog.apijeuxolympiques.pojo.Cart;
 import com.yrog.apijeuxolympiques.pojo.CartItem;
@@ -44,6 +45,12 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public CartItemResponse addItemToCart(Long cartId, CartItemCreateRequest request) {
+        Cart cart = cartRepository.findById(cartId).orElseThrow();
+
+        if (cart.getStatus() == CartStatus.PAYE) {
+            throw new IllegalStateException("Le panier a déjà été payé et ne peut plus être modifié.");
+        }
+
         Map<String, Object> message = new HashMap<>();
         message.put("action", "add");
         message.put("cartId", cartId);
@@ -59,6 +66,10 @@ public class CartItemServiceImpl implements CartItemService {
     public void removeItemFromCart(Long cartId, Long cartItemId) {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        if (cart.getStatus() == CartStatus.PAYE) {
+            throw new IllegalStateException("Le panier a déjà été payé et ne peut plus être modifié.");
+        }
 
         CartItem itemToRemove = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));

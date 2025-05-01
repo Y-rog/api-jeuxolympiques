@@ -2,6 +2,7 @@ package com.yrog.apijeuxolympiques.messaging.consumer;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.yrog.apijeuxolympiques.pojo.Cart;
 import com.yrog.apijeuxolympiques.pojo.CartItem;
@@ -31,8 +32,10 @@ public class CartItemConsumer {
     @Autowired
     private OfferService offerService;
 
-    @Autowired
-    private CartItemRepository cartItemRepository;
+     @Value("${item_expiration-duration}")
+     private Long itemExpirationDuration;
+
+
 
     @RabbitListener(queues = "cartItemQueue")
     @Transactional
@@ -80,7 +83,7 @@ public class CartItemConsumer {
             item.setOffer(offer);
             item.setPriceAtPurchase(priceAtPurchase);
             item.setQrCode(UUID.randomUUID().toString());
-            item.setExpirationTime(Instant.now().plus(Duration.ofMinutes(15)));
+            item.setExpirationTime(Instant.now().plus(Duration.ofMinutes(itemExpirationDuration)));
 
             cart.getItems().add(item);
             cart.setUpdatedAt(java.time.LocalDateTime.now());

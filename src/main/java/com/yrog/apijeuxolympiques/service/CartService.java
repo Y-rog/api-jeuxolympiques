@@ -11,5 +11,13 @@ public interface CartService {
     void deleteCart(Long id);
     CartResponse findCartByUser();
     void updateCartAmount(Cart cart);
+
+    void confirmPaymentAndGenerateQRCode(Long cartId, boolean simulateFailure);
+
+    Cart simulateFailedPayment(Long cartId);
+
+    Cart validatePayment(Long cartId);
+
+    void generateQRCodeCartItems(Cart cart);
 }
 

@@ -7,11 +7,7 @@ spring:
     password: ${DB_PASSWORD}
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    virtual-host: /
+    uri: ${CLOUDAMQP_URL}
 
   jpa:
     show-sql: true
@@ -39,4 +35,4 @@ admin:
 
 cart:
   item:
-    expiration-duration: ${ITEM_EXPIRATION_DURATION}
+    item_expiration-duration: ${ITEM_EXPIRATION_DURATION}

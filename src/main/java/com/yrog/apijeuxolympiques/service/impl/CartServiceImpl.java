@@ -4,37 +4,42 @@ import com.yrog.apijeuxolympiques.dto.cart.CartCreateRequest;
 import com.yrog.apijeuxolympiques.enums.CartStatus;
 import com.yrog.apijeuxolympiques.mapper.CartMapper;
 import com.yrog.apijeuxolympiques.pojo.Cart;
+import com.yrog.apijeuxolympiques.pojo.CartItem;
+import com.yrog.apijeuxolympiques.repository.CartItemRepository;
 import com.yrog.apijeuxolympiques.repository.CartRepository;
 import com.yrog.apijeuxolympiques.security.models.User;
 import com.yrog.apijeuxolympiques.security.repository.UserRepository;
 import com.yrog.apijeuxolympiques.service.CartService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import com.yrog.apijeuxolympiques.dto.cart.CartResponse;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CartServiceImpl implements CartService {
 
-    private final CartRepository cartRepository;
-    private final CartMapper cartMapper;
-    private final UserRepository userRepository;
+    @Autowired
+    private CartRepository cartRepository;
 
-    public CartServiceImpl(
-            CartRepository cartRepository,
-            CartMapper cartMapper,
-            UserRepository userRepository) {
-        this.cartRepository = cartRepository;
-        this.cartMapper = cartMapper;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private CartMapper cartMapper;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     @Override
     public CartResponse createCart(CartCreateRequest request) {
@@ -89,7 +94,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartResponse findCartByUser() {
-        // Récupérer l'utilisateur authentifié
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AccessDeniedException("Accès refusé");
@@ -99,26 +103,27 @@ public class CartServiceImpl implements CartService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
 
-        // Trouver le panier associé à cet utilisateur
-        Optional<Cart> optionalCart = cartRepository.findByUser(user);
+        // Ne chercher que les paniers avec statut EN_ATTENTE
+        Optional<Cart> optionalCart = cartRepository.findByUserAndStatus(user, CartStatus.EN_ATTENTE);
 
         Cart cart;
         if (optionalCart.isPresent()) {
             cart = optionalCart.get();
         } else {
-            // Créer un nouveau panier vide
+            // Aucun panier EN_ATTENTE : on en crée un nouveau
             cart = new Cart();
             cart.setUser(user);
             cart.setCreatedAt(LocalDateTime.now());
-            cart.setStatus(CartStatus.EN_ATTENTE); // ou autre valeur par défaut
-            cart = cartRepository.save(cart); // Sauvegarde en base
+            cart.setStatus(CartStatus.EN_ATTENTE);
+            cart = cartRepository.save(cart);
         }
 
-
-        // Retourner le Cart en CartResponse
         return cartMapper.toResponse(cart);
     }
 
+
+
+    @Override
     public void updateCartAmount(Cart cart) {
         BigDecimal total = cart.getItems().stream()
                 .map(item -> item.getPriceAtPurchase())
@@ -128,7 +133,55 @@ public class CartServiceImpl implements CartService {
     }
 
 
+    @Override
+    @Transactional
+    public void confirmPaymentAndGenerateQRCode(Long cartId, boolean simulateFailure) {
+        Cart cart = simulateFailure ? simulateFailedPayment(cartId) : validatePayment(cartId);
+        if (!simulateFailure) {
+            generateQRCodeCartItems(cart);
+        }
+    }
 
+    @Override
+    public Cart simulateFailedPayment(Long cartId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        cart.setStatus(CartStatus.EN_ATTENTE);
+        cart.setDateTransaction(null);
+        cart.setTransactionUuid(null);
+
+        cartRepository.save(cart);
+
+        return cart;
+    }
+
+    @Override
+    public Cart validatePayment(Long cartId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        cart.setDateTransaction(LocalDateTime.now());
+        cart.setTransactionUuid(UUID.randomUUID().toString());
+        cart.setStatus(CartStatus.PAYE);
+
+        return cartRepository.save(cart);
+    }
+
+    @Override
+    public void generateQRCodeCartItems(Cart cart) {
+        User user = cart.getUser();
+        if (user == null || user.getSecretKey() == null) {
+            throw new RuntimeException("Utilisateur ou clé secrète manquante pour le panier.");
+        }
+
+        for (CartItem item : cart.getItems()) {
+            String cleFinale = cart.getTransactionUuid() + "_" + user.getSecretKey();
+            item.setQrCode(cleFinale);
+        }
+
+        cartItemRepository.saveAll(cart.getItems());
+    }
 
 }
 

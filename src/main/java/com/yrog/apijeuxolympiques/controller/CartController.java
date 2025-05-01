@@ -2,8 +2,11 @@ package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.cart.CartCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cart.CartResponse;
+import com.yrog.apijeuxolympiques.pojo.Cart;
 import com.yrog.apijeuxolympiques.service.CartService;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +16,9 @@ import java.util.Map;
 @RequestMapping("api-jeuxolympiques/cart")
 public class CartController {
 
-    private final CartService cartService;
 
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
+    @Autowired
+    private CartService cartService;
 
     // Créer un panier
     @PostMapping
@@ -56,6 +57,20 @@ public class CartController {
             return ResponseEntity.notFound().build(); // 404 Not Found si panier introuvable
         }
     }
+
+    @PostMapping("/{id}/confirm-payment")
+    public ResponseEntity<String> confirmPayment(@PathVariable Long id, @RequestParam boolean simulateFailure) {
+        try {
+            cartService.confirmPaymentAndGenerateQRCode(id, simulateFailure);
+            return ResponseEntity.ok("Paiement " + (simulateFailure ? "échoué" : "validé") + " avec succès.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors du paiement : " + e.getMessage());
+        }
+    }
+
+
+
+
 
 }
 
