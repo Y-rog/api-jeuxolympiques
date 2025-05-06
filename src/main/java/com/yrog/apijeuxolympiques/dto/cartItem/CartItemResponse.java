@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class CartItemResponse {
 
     private Long cartItemId;
-    private String qrcode;
+    private String qrCode;
     private BigDecimal priceAtPurchase;
     private Long offerId;
     private Long cartId;

@@ -45,7 +45,7 @@ public class CartItemMapperImpl implements CartItemMapper {
 
         CartItemResponse response = new CartItemResponse();
         response.setCartItemId(item.getCartItemId());
-        response.setQrcode(item.getQrCode());
+        response.setQrCode(item.getQrCode());
         response.setPriceAtPurchase(item.getPriceAtPurchase());
         response.setOfferId(item.getOffer() != null ? item.getOffer().getOfferId() : null);
         response.setCartId(item.getCart() != null ? item.getCart().getCartId() : null);

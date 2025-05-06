@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class CartItemServiceImpl implements CartItemService {
@@ -86,6 +87,16 @@ public class CartItemServiceImpl implements CartItemService {
         cartRepository.save(cart);
     }
 
+    @Override
+    public CartItem getCartItem(Long cartItemId) {
+        Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+        if (cartItemOptional.isPresent()) {
+            return cartItemOptional.get();
+        } else {
+            throw new RuntimeException("CartItem not found with ID: " + cartItemId);
+
+        }
+    }
 }
 
 

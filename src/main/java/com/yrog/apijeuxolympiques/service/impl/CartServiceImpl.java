@@ -10,6 +10,7 @@ import com.yrog.apijeuxolympiques.repository.CartRepository;
 import com.yrog.apijeuxolympiques.security.models.User;
 import com.yrog.apijeuxolympiques.security.repository.UserRepository;
 import com.yrog.apijeuxolympiques.service.CartService;
+import com.yrog.apijeuxolympiques.service.QRCodeService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -40,6 +41,8 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CartItemRepository cartItemRepository;
 
+    @Autowired
+    private QRCodeService qrCodeService;
 
     @Override
     public CartResponse createCart(CartCreateRequest request) {
@@ -138,7 +141,7 @@ public class CartServiceImpl implements CartService {
     public void confirmPaymentAndGenerateQRCode(Long cartId, boolean simulateFailure) {
         Cart cart = simulateFailure ? simulateFailedPayment(cartId) : validatePayment(cartId);
         if (!simulateFailure) {
-            generateQRCodeCartItems(cart);
+            generateKeyConcatenationCartItems(cart);
         }
     }
 
@@ -169,7 +172,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void generateQRCodeCartItems(Cart cart) {
+    public void generateKeyConcatenationCartItems(Cart cart) {
         User user = cart.getUser();
         if (user == null || user.getSecretKey() == null) {
             throw new RuntimeException("Utilisateur ou clé secrète manquante pour le panier.");

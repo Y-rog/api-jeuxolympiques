@@ -2,14 +2,20 @@ package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.cart.CartCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cart.CartResponse;
+import com.yrog.apijeuxolympiques.dto.cartItem.CartItemQRCodeDTO;
 import com.yrog.apijeuxolympiques.pojo.Cart;
+import com.yrog.apijeuxolympiques.repository.CartRepository;
+import com.yrog.apijeuxolympiques.service.CartItemService;
 import com.yrog.apijeuxolympiques.service.CartService;
+import com.yrog.apijeuxolympiques.service.QRCodeService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,6 +25,12 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private QRCodeService qrCodeService;
+
+    @Autowired
+    private CartRepository cartRepository;
 
     // Créer un panier
     @PostMapping
@@ -67,10 +79,6 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors du paiement : " + e.getMessage());
         }
     }
-
-
-
-
 
 }
 

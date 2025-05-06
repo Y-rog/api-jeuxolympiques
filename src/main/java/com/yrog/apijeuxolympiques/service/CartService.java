@@ -3,6 +3,7 @@ package com.yrog.apijeuxolympiques.service;
 import com.yrog.apijeuxolympiques.dto.cart.CartCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cart.CartResponse;
 import com.yrog.apijeuxolympiques.pojo.Cart;
+import com.yrog.apijeuxolympiques.pojo.CartItem;
 
 
 public interface CartService {
@@ -18,6 +19,7 @@ public interface CartService {
 
     Cart validatePayment(Long cartId);
 
-    void generateQRCodeCartItems(Cart cart);
+    void generateKeyConcatenationCartItems(Cart cart);
+
 }
 

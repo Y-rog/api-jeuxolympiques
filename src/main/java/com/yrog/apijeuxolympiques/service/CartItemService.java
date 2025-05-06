@@ -2,6 +2,7 @@ package com.yrog.apijeuxolympiques.service;
 
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
+import com.yrog.apijeuxolympiques.pojo.CartItem;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -16,4 +17,5 @@ public interface CartItemService {
     @Transactional
     CartItemResponse addItemToCart(Long cartId, CartItemCreateRequest request);
 
+    CartItem getCartItem(Long cartItemId);
 }

@@ -72,7 +72,6 @@ public class CartItemConsumer {
             Offer offer = offerRepository.findById(offerId)
                     .orElseThrow(() -> new RuntimeException("Offer not found for offerId: " + offerId));
 
-            // Vérifie la disponibilité pour 1 place (car on ne gère plus quantity)
             if (!offerService.checkAvailabilityForOffer(offer.getOfferId(), 1)) {
                 System.out.println("Erreur : Pas assez de places disponibles pour l'offre " + offerId);
                 return;
@@ -82,13 +81,12 @@ public class CartItemConsumer {
             item.setCart(cart);
             item.setOffer(offer);
             item.setPriceAtPurchase(priceAtPurchase);
-            item.setQrCode(UUID.randomUUID().toString());
+            item.setQrCode("");
             item.setExpirationTime(Instant.now().plus(Duration.ofMinutes(itemExpirationDuration)));
 
             cart.getItems().add(item);
             cart.setUpdatedAt(java.time.LocalDateTime.now());
 
-            // Recalcul du montant total sans quantité
             cart.setAmount(cart.getItems().stream()
                     .map(CartItem::getPriceAtPurchase)
                     .reduce(BigDecimal.ZERO, BigDecimal::add));
