@@ -125,6 +125,7 @@ public class OfferServiceImpl implements OfferService {
                     dto.setEventDateTime(offer.getEvent().getEventDateTime());
                     dto.setOfferCategoryId(offer.getOfferCategory().getCategoryId());
                     dto.setOfferCategoryTitle(offer.getOfferCategory().getTitle());
+                    dto.setOfferCategoryPlacesPerOffer(offer.getOfferCategory().getPlacesPerOffer());
                     return dto;
                 })
                 .collect(Collectors.toList());
