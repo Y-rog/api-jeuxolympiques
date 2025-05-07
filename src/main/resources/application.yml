@@ -7,7 +7,13 @@ spring:
     password: ${DB_PASSWORD}
 
   rabbitmq:
-    uri: ${CLOUDAMQP_URL}
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VIRTUAL_HOST}
+    ssl:
+      enabled: ${RABBITMQ_SSL_ENABLED}
 
   jpa:
     show-sql: true
