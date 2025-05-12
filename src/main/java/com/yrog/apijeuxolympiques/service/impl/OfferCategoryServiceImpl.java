@@ -2,6 +2,7 @@ package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.offerCategory.OfferCategoryDTO;
 import com.yrog.apijeuxolympiques.mapper.impl.OfferCategoryMapperImpl;
+import com.yrog.apijeuxolympiques.pojo.Offer;
 import com.yrog.apijeuxolympiques.pojo.OfferCategory;
 import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.service.OfferCategoryService;
@@ -23,17 +24,23 @@ public class OfferCategoryServiceImpl implements OfferCategoryService {
 
     @Override
     public OfferCategoryDTO createCategory(OfferCategoryDTO offerCategoryDTO) {
+        // Vérification si une catégorie avec le même titre existe déjà
+        Optional<OfferCategory> existingCategory = offerCategoryRepository.findByTitleIgnoreCase(offerCategoryDTO.getTitle());
+        if (existingCategory.isPresent()) {
+            throw new IllegalArgumentException("Une catégorie avec ce titre existe déjà.");
+        }
+
+        // Si non existante, création
         OfferCategory offerCategory = offerCategoryMapper.toEntity(offerCategoryDTO);
         OfferCategory savedOfferCategory = offerCategoryRepository.save(offerCategory);
         return offerCategoryMapper.toDTO(savedOfferCategory);
     }
 
+
     @Override
-    public List<OfferCategoryDTO> getAllCategories() {
+    public List<OfferCategory> getAllCategories() {
         List<OfferCategory> offerCategories = offerCategoryRepository.findAll();
-        return offerCategories.stream()
-                .map(offerCategoryMapper::toDTO)
-                .collect(Collectors.toList());
+        return offerCategories;
     }
 
     @Override

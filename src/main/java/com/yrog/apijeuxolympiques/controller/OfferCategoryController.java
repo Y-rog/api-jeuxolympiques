@@ -1,6 +1,8 @@
 package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.offerCategory.OfferCategoryDTO;
+import com.yrog.apijeuxolympiques.pojo.Offer;
+import com.yrog.apijeuxolympiques.pojo.OfferCategory;
 import com.yrog.apijeuxolympiques.service.OfferCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +25,8 @@ public class OfferCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OfferCategoryDTO>> getAllCategories() {
-        List<OfferCategoryDTO> categories = offerCategoryService.getAllCategories();
+    public ResponseEntity<List<OfferCategory>> getAllCategories() {
+        List<OfferCategory> categories = offerCategoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 
