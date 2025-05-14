@@ -102,16 +102,16 @@ public class DataLoader {
             // === EVENEMENTS ===
             if (eventRepository.count() == 0) {
                 List<Event> events = List.of(
-                        new Event("Finale Football", "Match pour la médaille d'or", "Stade de France", 4, LocalDateTime.of(2024, 7, 30, 20, 0)),
-                        new Event("Demi-finale Basketball", "Les meilleurs s'affrontent", "Stade de Lille", 15, LocalDateTime.of(2024, 7, 28, 18, 0)),
-                        new Event("Finale Natation", "Courses finales", "Centre Aquatique", 50, LocalDateTime.of(2024, 7, 25, 19, 0)),
-                        new Event("Escrime par équipe", "Phase finale", "Grand Palais", 3000, LocalDateTime.of(2024, 7, 26, 17, 0)),
-                        new Event("Gymnastique", "Compétition finale", "Bercy Arena", 10000, LocalDateTime.of(2024, 7, 24, 16, 0)),
-                        new Event("Volley Ball", "Quart de finale", "Stade Pierre Mauroy", 12000, LocalDateTime.of(2024, 7, 23, 20, 0)),
-                        new Event("Handball", "Demi-finale femmes", "Stade de Lyon", 14000, LocalDateTime.of(2024, 7, 27, 18, 30)),
-                        new Event("Athlétisme 100m", "Grande finale du 100m", "Stade de France", 60000, LocalDateTime.of(2024, 7, 29, 21, 0)),
-                        new Event("Tennis", "Finale simple hommes", "Roland Garros", 15000, LocalDateTime.of(2024, 7, 31, 15, 0)),
-                        new Event("Boxe", "Finale poids lourds", "Zénith de Paris", 7000, LocalDateTime.of(2024, 8, 1, 20, 30))
+                        new Event("Finale Football", "Match pour la médaille d'or", "Stade de France", 4, LocalDateTime.of(2026, 7, 30, 20, 0)),
+                        new Event("Demi-finale Basketball", "Les meilleurs s'affrontent", "Stade de Lille", 15, LocalDateTime.of(2026, 7, 28, 18, 0)),
+                        new Event("Finale Natation", "Courses finales", "Centre Aquatique", 50, LocalDateTime.of(2026, 7, 25, 19, 0)),
+                        new Event("Match de poule A Escrime par équipe", "Phase finale", "Grand Palais", 3000, LocalDateTime.of(2026, 7, 26, 17, 0)),
+                        new Event("Demi-finale Gymnastique", "Compétition finale", "Bercy Arena", 10000, LocalDateTime.of(2026, 7, 24, 16, 0)),
+                        new Event("Demi-finale Volley Ball", "Quart de finale", "Stade Pierre Mauroy", 12000, LocalDateTime.of(2026, 7, 23, 20, 0)),
+                        new Event("Match de poule A Handball", "Demi-finale femmes", "Stade de Lyon", 14000, LocalDateTime.of(2026, 7, 27, 18, 30)),
+                        new Event("Finale Athlétisme 100m", "Grande finale du 100m", "Stade de France", 60000, LocalDateTime.of(2026, 7, 29, 21, 0)),
+                        new Event("Quart de finaleTennis", "Finale simple hommes", "Roland Garros", 15000, LocalDateTime.of(2026, 7, 31, 15, 0)),
+                        new Event("Finale Boxe", "Finale poids lourds", "Zénith de Paris", 7000, LocalDateTime.of(2026, 8, 1, 20, 30))
                 );
                 eventRepository.saveAll(events);
             }
@@ -140,6 +140,7 @@ public class DataLoader {
                     offer.setPrice(calculatedPrice);
                     offer.setEvent(event);
                     offer.setOfferCategory(category);
+                    offer.setActive(true);
 
                     offers.add(offer);
                 }

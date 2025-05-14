@@ -1,6 +1,7 @@
 package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
+import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
 import com.yrog.apijeuxolympiques.mapper.impl.OfferMapperImpl;
 import com.yrog.apijeuxolympiques.pojo.Event;
@@ -11,6 +12,7 @@ import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
 import com.yrog.apijeuxolympiques.service.EventService;
 import com.yrog.apijeuxolympiques.service.OfferService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,6 +116,7 @@ public class OfferServiceImpl implements OfferService {
         List<Offer> offers = offerRepository.findAll();
 
         return offers.stream()
+                .filter(Offer::isActive)
                 .map(offer -> {
                     OfferDetailDTO dto = new OfferDetailDTO();
                     dto.setOfferId(offer.getOfferId());
@@ -127,6 +130,29 @@ public class OfferServiceImpl implements OfferService {
                     dto.setOfferCategoryTitle(offer.getOfferCategory().getTitle());
                     dto.setOfferCategoryPlacesPerOffer(offer.getOfferCategory().getPlacesPerOffer());
                     return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OfferDetailAdminRequest> getAllOffersDetailForAdmin() {
+        List<Offer> offers = offerRepository.findAll();
+
+        return offers.stream()
+                .map(offer -> {
+                    OfferDetailAdminRequest request = new OfferDetailAdminRequest();
+                    request.setOfferId(offer.getOfferId());
+                    request.setPrice(offer.getPrice());
+                    request.setAvailability(offer.isAvailability());
+                    request.setActive(offer.isActive());
+                    request.setEventId(offer.getEvent().getEventId());
+                    request.setEventTitle(offer.getEvent().getEventTitle());
+                    request.setEventLocation(offer.getEvent().getEventLocation());
+                    request.setEventDateTime(offer.getEvent().getEventDateTime());
+                    request.setOfferCategoryId(offer.getOfferCategory().getCategoryId());
+                    request.setOfferCategoryTitle(offer.getOfferCategory().getTitle());
+                    request.setOfferCategoryPlacesPerOffer(offer.getOfferCategory().getPlacesPerOffer());
+                    return request;
                 })
                 .collect(Collectors.toList());
     }
@@ -193,6 +219,17 @@ public class OfferServiceImpl implements OfferService {
             }
         }
     }
+
+    @Override
+    public boolean toggleOfferActive(Long offerId) {
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new EntityNotFoundException("Offre non trouvée"));
+        offer.setActive(!offer.isActive());
+        offerRepository.save(offer);
+        return offer.isActive(); // Retourne le nouvel état
+    }
+
+
 }
 
 

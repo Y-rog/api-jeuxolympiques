@@ -72,7 +72,7 @@ public class WebSecurityConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(frontUrl)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
 
@@ -101,6 +101,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/offers/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/offers").hasAuthority(ERole.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PATCH,"/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
                         .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
                         .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/offer-categories/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
