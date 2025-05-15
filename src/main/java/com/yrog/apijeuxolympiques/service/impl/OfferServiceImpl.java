@@ -7,6 +7,7 @@ import com.yrog.apijeuxolympiques.mapper.impl.OfferMapperImpl;
 import com.yrog.apijeuxolympiques.pojo.Event;
 import com.yrog.apijeuxolympiques.pojo.Offer;
 import com.yrog.apijeuxolympiques.pojo.OfferCategory;
+import com.yrog.apijeuxolympiques.repository.CartItemRepository;
 import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
@@ -35,6 +36,9 @@ public class OfferServiceImpl implements OfferService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     @Autowired
     private OfferMapperImpl offerMapper;
@@ -77,39 +81,66 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
+    @Transactional
     public OfferDTO updateOffer(Long id, OfferDTO offerDTO) {
-        Optional<Offer> existingOffer = offerRepository.findById(id);
-        if (existingOffer.isPresent()) {
-            Offer offerToUpdate = existingOffer.get();
+        Offer offerToUpdate = offerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Offre non trouvée"));
+
+        // Si l'offre est active, on interdit la modification
+        if (offerToUpdate.isActive()) {
+            throw new IllegalStateException("Impossible de modifier une offre publiée.");
+        }
+
+        // Vérifie si des tickets ont déjà été vendus pour cette offre
+        boolean hasSoldTickets = cartItemRepository.existsByOfferAndCart_TransactionUuidIsNotNull(offerToUpdate);
+
+        if (hasSoldTickets) {
+            // Autorise uniquement le changement de prix
+            offerToUpdate.setPrice(offerDTO.getPrice());
+        } else {
+            // Offre modifiable entièrement
             offerToUpdate.setPrice(offerDTO.getPrice());
             offerToUpdate.setAvailability(offerDTO.isAvailability());
 
             if (offerDTO.getOfferCategoryId() != null) {
                 OfferCategory category = offerCategoryRepository.findById(offerDTO.getOfferCategoryId())
-                        .orElseThrow(() -> new RuntimeException("Category not found"));
+                        .orElseThrow(() -> new RuntimeException("Catégorie non trouvée"));
                 offerToUpdate.setOfferCategory(category);
             }
 
             if (offerDTO.getEventId() != null) {
                 Event event = eventRepository.findById(offerDTO.getEventId())
-                        .orElseThrow(() -> new RuntimeException("Event not found"));
+                        .orElseThrow(() -> new RuntimeException("Événement non trouvé"));
                 offerToUpdate.setEvent(event);
             }
-
-            Offer updatedOffer = offerRepository.save(offerToUpdate);
-            return offerMapper.toDTO(updatedOffer);
         }
-        return null;
+
+        Offer updatedOffer = offerRepository.save(offerToUpdate);
+        return offerMapper.toDTO(updatedOffer);
     }
+
 
     @Override
     public boolean deleteOffer(Long id) {
-        if (offerRepository.existsById(id)) {
-            offerRepository.deleteById(id);
-            return true;
+        Offer offerToDelete = offerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Offre non trouvée"));
+
+        // Si l'offre est active, on interdit la suppression
+        if (offerToDelete.isActive()) {
+            throw new IllegalStateException("Impossible de supprimer une offre publiée.");
         }
-        return false;
+
+        // Vérifie si des tickets ont déjà été vendus pour cette offre
+        boolean hasSoldTickets = cartItemRepository.existsByOfferAndCart_TransactionUuidIsNotNull(offerToDelete);
+
+        if (hasSoldTickets) {
+            throw new IllegalStateException("Impossible de supprimer une offre dont des places ont été vendues.");
+        }
+
+        offerRepository.delete(offerToDelete);
+        return true;
     }
+
 
     @Override
     public List<OfferDetailDTO> getAllOffersDetail() {

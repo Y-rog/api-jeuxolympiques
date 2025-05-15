@@ -20,6 +20,9 @@ public class OfferDTO {
     @Schema(description = "Disponibilité de l'offre (true = disponible, false = épuisée)", example = "true")
     private boolean availability;
 
+    @Schema(description = "Activation de l'offre", example = "true")
+    private boolean isActive;
+
     @NotNull(message = "L'identifiant de l'événement est obligatoire")
     @Schema(description = "Identifiant de l'événement lié", example = "10")
     private Long eventId;

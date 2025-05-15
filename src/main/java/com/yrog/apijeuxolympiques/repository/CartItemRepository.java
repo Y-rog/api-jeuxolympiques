@@ -3,6 +3,7 @@ package com.yrog.apijeuxolympiques.repository;
 import com.yrog.apijeuxolympiques.enums.CartStatus;
 import com.yrog.apijeuxolympiques.pojo.Cart;
 import com.yrog.apijeuxolympiques.pojo.CartItem;
+import com.yrog.apijeuxolympiques.pojo.Offer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,6 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     List<CartItem> findByCart(Cart cart);
 
     List<CartItem> findByCartUserIdAndCartStatus(Long userId, CartStatus cartStatus);
+
+    boolean existsByOfferAndCart_TransactionUuidIsNotNull(Offer offerToUpdate);
 }
