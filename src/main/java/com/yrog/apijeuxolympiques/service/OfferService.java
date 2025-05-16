@@ -3,6 +3,7 @@ package com.yrog.apijeuxolympiques.service;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
+import com.yrog.apijeuxolympiques.dto.offer.OfferSalesStatsDTO;
 import com.yrog.apijeuxolympiques.pojo.Offer;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,8 @@ public interface OfferService {
     boolean checkAvailabilityForOffer(Long offerId, int requestedQuantity);
 
     boolean toggleOfferActive(Long offerId);
+
+    List<OfferSalesStatsDTO> findOfferStats();
 }
 
 

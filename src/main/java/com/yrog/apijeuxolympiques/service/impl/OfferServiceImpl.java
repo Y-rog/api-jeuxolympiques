@@ -1,8 +1,10 @@
 package com.yrog.apijeuxolympiques.service.impl;
 
+import com.yrog.apijeuxolympiques.dto.cartItem.SalesByOfferDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
+import com.yrog.apijeuxolympiques.dto.offer.OfferSalesStatsDTO;
 import com.yrog.apijeuxolympiques.mapper.impl.OfferMapperImpl;
 import com.yrog.apijeuxolympiques.pojo.Event;
 import com.yrog.apijeuxolympiques.pojo.Offer;
@@ -11,6 +13,7 @@ import com.yrog.apijeuxolympiques.repository.CartItemRepository;
 import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
+import com.yrog.apijeuxolympiques.service.CartItemService;
 import com.yrog.apijeuxolympiques.service.EventService;
 import com.yrog.apijeuxolympiques.service.OfferService;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,6 +49,7 @@ public class OfferServiceImpl implements OfferService {
 
     @Autowired
     private EventService eventService;
+
 
     @Override
     public OfferDTO createOffer(OfferDTO offerDTO) {
@@ -258,6 +263,36 @@ public class OfferServiceImpl implements OfferService {
         offer.setActive(!offer.isActive());
         offerRepository.save(offer);
         return offer.isActive(); // Retourne le nouvel état
+    }
+
+    @Override
+    public List<OfferSalesStatsDTO> findOfferStats() {
+        List<Offer> offers = offerRepository.findAll();
+        List<SalesByOfferDTO> salesStats = cartItemRepository.countSalesByOffer();
+
+        Map<Long, Long> salesCountByOfferId = salesStats.stream()
+                .collect(Collectors.toMap(SalesByOfferDTO::getOfferId, SalesByOfferDTO::getSalesCount));
+
+        return offers.stream()
+                .map(offer -> {
+                    OfferSalesStatsDTO dto = new OfferSalesStatsDTO();
+                    dto.setOfferId(offer.getOfferId());
+                    dto.setPrice(offer.getPrice());
+                    dto.setAvailability(offer.isAvailability());
+                    dto.setActive(offer.isActive());
+                    dto.setEventId(offer.getEvent().getEventId());
+                    dto.setEventTitle(offer.getEvent().getEventTitle());
+                    dto.setEventLocation(offer.getEvent().getEventLocation());
+                    dto.setEventDateTime(offer.getEvent().getEventDateTime());
+                    dto.setOfferCategoryId(offer.getOfferCategory().getCategoryId());
+                    dto.setOfferCategoryTitle(offer.getOfferCategory().getTitle());
+                    dto.setOfferCategoryPlacesPerOffer(offer.getOfferCategory().getPlacesPerOffer());
+
+                    dto.setSalesCount(Math.toIntExact(salesCountByOfferId.getOrDefault(offer.getOfferId(), 0L)));
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
 

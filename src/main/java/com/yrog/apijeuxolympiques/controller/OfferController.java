@@ -3,6 +3,7 @@ package com.yrog.apijeuxolympiques.controller;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
+import com.yrog.apijeuxolympiques.dto.offer.OfferSalesStatsDTO;
 import com.yrog.apijeuxolympiques.service.OfferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,10 @@ public class OfferController {
         return ResponseEntity.ok(newStatus);
     }
 
+    @GetMapping("/admin/stats/offers")
+    public List<OfferSalesStatsDTO> getFullOfferStats() {
+        return offerService.findOfferStats();
+    }
 
 
 
