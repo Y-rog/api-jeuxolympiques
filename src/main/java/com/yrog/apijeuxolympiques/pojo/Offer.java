@@ -26,6 +26,7 @@ public class Offer {
     @JoinColumn(name = "event_id")
     private Event event;  // Relation avec l'événement
 
+    @Column(name = "is_active")
     private boolean isActive = false;
 
     public Offer() {}
