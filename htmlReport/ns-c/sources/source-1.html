@@ -1,0 +1,197 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CartItemMapperImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.mapper.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: CartItemMapperImpl (com.yrog.apijeuxolympiques.mapper.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CartItemMapperImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14,3%
+  </span>
+  <span class="absValue">
+    (1/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2,7%
+  </span>
+  <span class="absValue">
+    (1/37)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.mapper.impl;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
+&nbsp;import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
+&nbsp;import com.yrog.apijeuxolympiques.mapper.CartItemMapper;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Cart;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.CartItem;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Offer;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;public class CartItemMapperImpl implements CartItemMapper {</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public CartItemCreateRequest toDTO(CartItem cartItem) {
+<b class="nc">&nbsp;        if (cartItem == null) return null;</b>
+&nbsp;
+<b class="nc">&nbsp;        CartItemCreateRequest dto = new CartItemCreateRequest();</b>
+<b class="nc">&nbsp;        dto.setPriceAtPurchase(cartItem.getPriceAtPurchase());</b>
+<b class="nc">&nbsp;        dto.setOfferId(cartItem.getOffer().getOfferId());</b>
+&nbsp;
+<b class="nc">&nbsp;        return dto;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public CartItem toEntity(CartItemCreateRequest dto) {
+<b class="nc">&nbsp;        if (dto == null) return null;</b>
+&nbsp;
+<b class="nc">&nbsp;        CartItem entity = new CartItem();</b>
+<b class="nc">&nbsp;        entity.setPriceAtPurchase(dto.getPriceAtPurchase());</b>
+&nbsp;
+<b class="nc">&nbsp;        Offer offer = new Offer();</b>
+<b class="nc">&nbsp;        offer.setOfferId(dto.getOfferId());</b>
+<b class="nc">&nbsp;        entity.setOffer(offer);</b>
+&nbsp;
+<b class="nc">&nbsp;        return entity;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public CartItemResponse toResponse(CartItem item) {
+<b class="nc">&nbsp;        if (item == null) return null;</b>
+&nbsp;
+<b class="nc">&nbsp;        CartItemResponse response = new CartItemResponse();</b>
+<b class="nc">&nbsp;        response.setCartItemId(item.getCartItemId());</b>
+<b class="nc">&nbsp;        response.setQrCode(item.getQrCode());</b>
+<b class="nc">&nbsp;        response.setPriceAtPurchase(item.getPriceAtPurchase());</b>
+<b class="nc">&nbsp;        response.setOfferId(item.getOffer() != null ? item.getOffer().getOfferId() : null);</b>
+<b class="nc">&nbsp;        response.setCartId(item.getCart() != null ? item.getCart().getCartId() : null);</b>
+<b class="nc">&nbsp;        response.setAddedAt(item.getAddedAt());</b>
+<b class="nc">&nbsp;        response.setExpirationTime(item.getExpirationTime());</b>
+&nbsp;
+<b class="nc">&nbsp;        return response;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;CartItemResponse&gt; toResponseList(List&lt;CartItem&gt; items) {
+<b class="nc">&nbsp;        return items.stream()</b>
+<b class="nc">&nbsp;                .map(this::toResponse)</b>
+<b class="nc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;CartItem&gt; toEntityList(List&lt;CartItemCreateRequest&gt; requests, Cart cart, List&lt;Offer&gt; offers) {
+<b class="nc">&nbsp;        return requests.stream()</b>
+<b class="nc">&nbsp;                .map(req -&gt; {</b>
+<b class="nc">&nbsp;                    Offer offer = offers.stream()</b>
+<b class="nc">&nbsp;                            .filter(o -&gt; o.getOfferId().equals(req.getOfferId()))</b>
+<b class="nc">&nbsp;                            .findFirst()</b>
+<b class="nc">&nbsp;                            .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Offer not found for ID: &quot; + req.getOfferId()));</b>
+&nbsp;
+<b class="nc">&nbsp;                    CartItem item = toEntity(req);</b>
+<b class="nc">&nbsp;                    item.setCart(cart);</b>
+<b class="nc">&nbsp;                    item.setOffer(offer);</b>
+<b class="nc">&nbsp;                    return item;</b>
+&nbsp;                })
+<b class="nc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,160 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > OfferDetailAdminRequest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.dto.offer</a>
+</div>
+
+<h1>Coverage Summary for Class: OfferDetailAdminRequest (com.yrog.apijeuxolympiques.dto.offer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OfferDetailAdminRequest</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.dto.offer;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import jakarta.persistence.GeneratedValue;
+&nbsp;import jakarta.persistence.GenerationType;
+&nbsp;import jakarta.persistence.Id;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;
+&nbsp;@Getter
+&nbsp;@Setter
+&nbsp;public class OfferDetailAdminRequest {
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private Long offerId;
+&nbsp;
+&nbsp;    @Schema(description = &quot;Prix de l&#39;offre&quot;, example = &quot;49.99&quot;)
+&nbsp;    @NotNull(message = &quot;Le prix ne peut pas être nul&quot;)
+&nbsp;    private BigDecimal price;
+&nbsp;
+&nbsp;    @Schema(description = &quot;Disponibilité de l&#39;offre&quot;, example = &quot;true&quot;)
+&nbsp;    private boolean availability;
+&nbsp;
+&nbsp;    @Schema(description = &quot;Activation de l&#39;offre&quot;, example = &quot;true&quot;)
+&nbsp;    private boolean isActive;
+&nbsp;
+&nbsp;    @Schema(description = &quot;ID de l&#39;événement lié&quot;, example = &quot;1&quot;)
+&nbsp;    @NotNull
+&nbsp;    private Long eventId;
+&nbsp;
+&nbsp;    @Schema(description = &quot;Titre de l&#39;événement&quot;, example = &quot;Finale de Basketball&quot;)
+&nbsp;    private String eventTitle;
+&nbsp;
+&nbsp;    @Schema(description = &quot;Lieu de l&#39;événement&quot;, example = &quot;Stade de Lille&quot;)
+&nbsp;    private String eventLocation;
+&nbsp;
+&nbsp;    @Schema(description = &quot;Date et heure de l&#39;événement (format lisible)&quot;, example = &quot;22/07/2024 20:00&quot;)
+&nbsp;    private LocalDateTime eventDateTime; // ici on utilise String formaté, sinon tu peux mettre LocalDateTime
+&nbsp;
+&nbsp;    @Schema(description = &quot;ID de la catégorie d&#39;offre&quot;, example = &quot;2&quot;)
+&nbsp;    @NotNull
+&nbsp;    private Long offerCategoryId;
+&nbsp;
+&nbsp;    @Schema(description = &quot;Titre de la catégorie d&#39;offre&quot;, example = &quot;Duo&quot;)
+&nbsp;    private String offerCategoryTitle;
+&nbsp;
+&nbsp;    @Schema(description = &quot;Nombre de places par offre&quot;, example = &quot;2&quot;)
+&nbsp;    private Integer offerCategoryPlacesPerOffer;
+&nbsp;
+<b class="nc">&nbsp;    public OfferDetailAdminRequest() {}</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

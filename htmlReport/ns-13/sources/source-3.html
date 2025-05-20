@@ -1,0 +1,220 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > EventServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: EventServiceImpl (com.yrog.apijeuxolympiques.service.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14,3%
+  </span>
+  <span class="absValue">
+    (1/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3,3%
+  </span>
+  <span class="absValue">
+    (1/30)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.service.impl;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.dto.event.EventDTO;
+&nbsp;import com.yrog.apijeuxolympiques.mapper.EventMapper;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.CartItem;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Event;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Offer;
+&nbsp;import com.yrog.apijeuxolympiques.repository.CartRepository;
+&nbsp;import com.yrog.apijeuxolympiques.repository.EventRepository;
+&nbsp;import com.yrog.apijeuxolympiques.repository.OfferRepository;
+&nbsp;import com.yrog.apijeuxolympiques.service.EventService;
+&nbsp;import com.yrog.apijeuxolympiques.service.OfferService;
+&nbsp;import jakarta.persistence.EntityNotFoundException;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Cart;
+&nbsp;import org.springframework.web.server.ResponseStatusException;
+&nbsp;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;import static org.springframework.http.HttpStatus.NOT_FOUND;
+&nbsp;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class EventServiceImpl implements EventService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private EventRepository eventRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private EventMapper eventMapper;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private CartRepository cartRepository;
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public EventDTO createEvent(EventDTO eventDTO) {
+<b class="nc">&nbsp;        Event event = eventMapper.toEntity(eventDTO);</b>
+<b class="nc">&nbsp;        Event savedEvent = eventRepository.save(event);</b>
+<b class="nc">&nbsp;        return eventMapper.toDTO(savedEvent);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Optional&lt;Event&gt; getEventById(Long eventId) {
+<b class="nc">&nbsp;        return this.eventRepository.findById(eventId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Event&gt; getAllEvents() {
+<b class="nc">&nbsp;        return this.eventRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public EventDTO updateEventById(Long id, EventDTO eventDTO) {
+<b class="nc">&nbsp;        Event existingEvent = eventRepository.findById(id)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Event not found with id: &quot; + id));</b>
+&nbsp;
+<b class="nc">&nbsp;        existingEvent.setEventTitle(eventDTO.getEventTitle());</b>
+<b class="nc">&nbsp;        existingEvent.setEventDescription(eventDTO.getEventDescription());</b>
+<b class="nc">&nbsp;        existingEvent.setEventLocation(eventDTO.getEventLocation());</b>
+<b class="nc">&nbsp;        existingEvent.setEventPlacesNumber(eventDTO.getEventPlacesNumber());</b>
+<b class="nc">&nbsp;        existingEvent.setEventDateTime(eventDTO.getEventDateTime());</b>
+&nbsp;
+<b class="nc">&nbsp;        Event updatedEvent = eventRepository.save(existingEvent);</b>
+&nbsp;
+<b class="nc">&nbsp;        return eventMapper.toDTO(updatedEvent);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean deleteEventById(Long id) {
+<b class="nc">&nbsp;        Optional&lt;Event&gt; event = eventRepository.findById(id);</b>
+<b class="nc">&nbsp;        if (event.isPresent()) {</b>
+<b class="nc">&nbsp;            eventRepository.deleteById(id);</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int getAvailablePlacesForEvent(Long eventId) {
+<b class="nc">&nbsp;        Event event = eventRepository.findById(eventId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new RuntimeException(&quot;Event not found&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        List&lt;Cart&gt; carts = cartRepository.findByItems_Offer_Event_EventId(eventId);</b>
+&nbsp;
+<b class="nc">&nbsp;        int reservedPlaces = 0;</b>
+&nbsp;
+<b class="nc">&nbsp;        for (Cart cart : carts) {</b>
+<b class="nc">&nbsp;            for (CartItem cartItem : cart.getItems()) {</b>
+<b class="nc">&nbsp;                if (cartItem.getOffer().getEvent().getEventId().equals(eventId)) {</b>
+<b class="nc">&nbsp;                    int placesPerOffer = cartItem.getOffer().getOfferCategory().getPlacesPerOffer();</b>
+<b class="nc">&nbsp;                    reservedPlaces += placesPerOffer;</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return event.getEventPlacesNumber() - reservedPlaces;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

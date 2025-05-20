@@ -1,0 +1,164 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > OfferMapperImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.mapper.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: OfferMapperImpl (com.yrog.apijeuxolympiques.mapper.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OfferMapperImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5,9%
+  </span>
+  <span class="absValue">
+    (1/17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.mapper.impl;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
+&nbsp;import com.yrog.apijeuxolympiques.mapper.OfferMapper;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Offer;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;public class OfferMapperImpl implements OfferMapper {</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public OfferDTO toDTO(Offer offer) {
+<b class="nc">&nbsp;        if (offer == null) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        OfferDTO offerDTO = new OfferDTO();</b>
+<b class="nc">&nbsp;        offerDTO.setPrice(offer.getPrice());</b>
+<b class="nc">&nbsp;        offerDTO.setAvailability(offer.isAvailability());</b>
+&nbsp;
+&nbsp;        // Vérification que la catégorie n&#39;est pas nulle
+<b class="nc">&nbsp;        if (offer.getOfferCategory() != null) {</b>
+<b class="nc">&nbsp;            offerDTO.setOfferCategoryId(offer.getOfferCategory().getCategoryId());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (offer.getEvent() != null) {</b>
+<b class="nc">&nbsp;            offerDTO.setEventId(offer.getEvent().getEventId());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return offerDTO;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Offer toEntity(OfferDTO offerDTO) {
+<b class="nc">&nbsp;        if (offerDTO == null) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Offer offer = new Offer();</b>
+<b class="nc">&nbsp;        offer.setPrice(offerDTO.getPrice());</b>
+<b class="nc">&nbsp;        offer.setAvailability(offerDTO.isAvailability());</b>
+&nbsp;
+&nbsp;        // À implémenter : lier la catégorie et l&#39;événement en fonction des IDs (dans le service)
+<b class="nc">&nbsp;        return offer;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

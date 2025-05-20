@@ -1,0 +1,176 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > JwtUtils</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.security.jwt</a>
+</div>
+
+<h1>Coverage Summary for Class: JwtUtils (com.yrog.apijeuxolympiques.security.jwt)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JwtUtils</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16,7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4%
+  </span>
+  <span class="absValue">
+    (1/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.security.jwt;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.security.service.UserDetailsImpl;
+&nbsp;import io.jsonwebtoken.*;
+&nbsp;import io.jsonwebtoken.io.Decoders;
+&nbsp;import io.jsonwebtoken.security.Keys;
+&nbsp;import org.springframework.beans.factory.annotation.Value;
+&nbsp;import org.springframework.security.core.Authentication;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;import java.security.Key;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Component
+<b class="fc">&nbsp;public class JwtUtils {</b>
+&nbsp;
+&nbsp;    @Value(&quot;${jo.jwtSecret}&quot;)
+&nbsp;    private String jwtSecret;
+&nbsp;
+&nbsp;    @Value(&quot;${jo.jwtExpirationInMs}&quot;)
+&nbsp;    private int jwtExpirationInMs;
+&nbsp;
+&nbsp;    public String generateJwtToken(Authentication authentication) {
+<b class="nc">&nbsp;        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();</b>
+&nbsp;
+<b class="nc">&nbsp;        return Jwts.builder()</b>
+<b class="nc">&nbsp;                .setSubject(userPrincipal.getUsername())</b>
+<b class="nc">&nbsp;                .claim(&quot;roles&quot;, userPrincipal.getAuthorities())</b>
+<b class="nc">&nbsp;                .setIssuedAt(new Date())</b>
+<b class="nc">&nbsp;                .setExpiration(new Date(new Date().getTime() + jwtExpirationInMs))</b>
+<b class="nc">&nbsp;                .signWith(SignatureAlgorithm.HS256, jwtSecret)</b>
+<b class="nc">&nbsp;                .compact();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Key key() {
+<b class="nc">&nbsp;        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getUsernameFromJwtToken(String token) {
+<b class="nc">&nbsp;        return Jwts.parserBuilder()</b>
+<b class="nc">&nbsp;                .setSigningKey(key()).build()</b>
+<b class="nc">&nbsp;                .parseClaimsJws(token).getBody().getSubject();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean validateJwtToken(String token){
+&nbsp;        try {
+<b class="nc">&nbsp;            Jwts.parserBuilder()</b>
+<b class="nc">&nbsp;                    .setSigningKey(key()).build().parse(token);</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        } catch (MalformedJwtException e) {
+<b class="nc">&nbsp;            System.out.println(&quot;Invalid JWT token : &quot; + e.getMessage());</b>
+&nbsp;        } catch (ExpiredJwtException e) {
+<b class="nc">&nbsp;            System.out.println(&quot;JWT token ix expired: &quot; + e.getMessage());</b>
+&nbsp;        } catch (UnsupportedJwtException e) {
+<b class="nc">&nbsp;            System.out.println(&quot;JWT token in unsupported : &quot; + e.getMessage());</b>
+&nbsp;        } catch (IllegalArgumentException e) {
+<b class="nc">&nbsp;            System.out.println(&quot;JWT claims string is empty : &quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Extraire les rôles du token
+&nbsp;    public List&lt;String&gt; getRolesFromToken(String token) {
+<b class="nc">&nbsp;        Claims claims = Jwts.parser().setSigningKey(jwtSecret)</b>
+<b class="nc">&nbsp;                .parseClaimsJws(token)</b>
+<b class="nc">&nbsp;                .getBody();</b>
+&nbsp;
+<b class="nc">&nbsp;        return (List&lt;String&gt;) claims.get(&quot;roles&quot;);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

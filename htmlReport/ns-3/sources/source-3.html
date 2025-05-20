@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CartItemController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: CartItemController (com.yrog.apijeuxolympiques.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CartItemController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (2/10)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.controller;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
+&nbsp;import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
+&nbsp;import com.yrog.apijeuxolympiques.service.CartItemService;
+&nbsp;import com.yrog.apijeuxolympiques.service.CartService;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;api-jeuxolympiques/cart/{cartId}/items&quot;)
+&nbsp;public class CartItemController {
+&nbsp;
+&nbsp;    private final CartItemService cartItemService;
+&nbsp;
+<b class="fc">&nbsp;    public CartItemController(CartService cartService, CartItemService cartItemService) {</b>
+<b class="fc">&nbsp;        this.cartItemService = cartItemService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Récupérer les éléments du panier par cartId
+&nbsp;    @GetMapping
+&nbsp;    public ResponseEntity&lt;List&lt;CartItemResponse&gt;&gt; findCartItemsByCartId(@PathVariable Long cartId) {
+<b class="nc">&nbsp;        List&lt;CartItemResponse&gt; items = cartItemService.findCartItemsByCartId(cartId);</b>
+&nbsp;
+&nbsp;        // Si aucun élément n&#39;est trouvé dans le panier, on renvoie un tableau vide avec un statut 200 OK
+<b class="nc">&nbsp;        if (items.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok().body(List.of());  // Réponse avec un tableau vide</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok(items);  // Retourne les éléments du panier si trouvés</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Supprimer un élément du panier
+&nbsp;    @DeleteMapping(&quot;/{cartItemId}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; removeItemFromCart(@PathVariable Long cartId, @PathVariable Long cartItemId) {
+<b class="nc">&nbsp;        cartItemService.removeItemFromCart(cartId, cartItemId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.noContent().build();  // Renvoie un code HTTP 204 (No Content)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Ajouter un élément dans le panier
+&nbsp;    @PostMapping
+&nbsp;    public ResponseEntity&lt;CartItemResponse&gt; addItem(@PathVariable Long cartId, @RequestBody @Valid CartItemCreateRequest request) {
+&nbsp;
+<b class="nc">&nbsp;        CartItemResponse response = cartItemService.addItemToCart(cartId, request);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(response);  // Renvoie le CartItemResponse avec un code HTTP 200</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > OfferController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: OfferController (com.yrog.apijeuxolympiques.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OfferController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9,1%
+  </span>
+  <span class="absValue">
+    (1/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4,2%
+  </span>
+  <span class="absValue">
+    (1/24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.controller;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
+&nbsp;import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
+&nbsp;import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
+&nbsp;import com.yrog.apijeuxolympiques.dto.offer.OfferSalesStatsDTO;
+&nbsp;import com.yrog.apijeuxolympiques.service.OfferService;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;api-jeuxolympiques/offers&quot;)
+<b class="fc">&nbsp;public class OfferController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OfferService offerService;
+&nbsp;
+&nbsp;    @PostMapping
+&nbsp;    public ResponseEntity&lt;OfferDTO&gt; createOffer(@RequestBody OfferDTO offerDTO) {
+<b class="nc">&nbsp;        OfferDTO createdOffer = offerService.createOffer(offerDTO);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(createdOffer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping()
+&nbsp;    public ResponseEntity&lt;List&lt;OfferDetailDTO&gt;&gt; getAllOffersDetail() {
+<b class="nc">&nbsp;        List&lt;OfferDetailDTO&gt; offers = offerService.getAllOffersDetail();</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(offers);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/admin&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;OfferDetailAdminRequest&gt;&gt; getAllOffersDetailForAdmin() {
+<b class="nc">&nbsp;        List&lt;OfferDetailAdminRequest&gt; offers = offerService.getAllOffersDetailForAdmin();</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(offers);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;OfferDTO&gt; getOfferById(@PathVariable Long id) {
+<b class="nc">&nbsp;        OfferDTO offerDTO = offerService.getOfferById(id);</b>
+<b class="nc">&nbsp;        if (offerDTO != null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(offerDTO);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;OfferDTO&gt; updateOffer(@PathVariable Long id, @RequestBody OfferDTO offerDTO) {
+<b class="nc">&nbsp;        OfferDTO updatedOffer = offerService.updateOffer(id, offerDTO);</b>
+<b class="nc">&nbsp;        if (updatedOffer != null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(updatedOffer);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteOffer(@PathVariable Long id) {
+<b class="nc">&nbsp;        if (offerService.deleteOffer(id)) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // Endpoint pour vérifier la disponibilité d&#39;une offre
+&nbsp;    @GetMapping(&quot;/{offerId}/check-availability&quot;)
+&nbsp;    public boolean checkAvailability(@PathVariable Long offerId, @RequestParam int requestedQuantity) {
+<b class="nc">&nbsp;        return offerService.checkAvailabilityForOffer(offerId, requestedQuantity);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/update-offers-availability/event/{eventId}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; updateOffersAvailabilityByEvent(@PathVariable Long eventId) {
+<b class="nc">&nbsp;        offerService.updateOffersAvailabilityByEvent(eventId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PatchMapping(&quot;/{offerId}/toggle-active&quot;)
+&nbsp;    public ResponseEntity&lt;Boolean&gt; toggleOfferActive(@PathVariable Long offerId) {
+<b class="nc">&nbsp;        boolean newStatus = offerService.toggleOfferActive(offerId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(newStatus);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/admin/stats/offers&quot;)
+&nbsp;    public List&lt;OfferSalesStatsDTO&gt; getFullOfferStats() {
+<b class="nc">&nbsp;        return offerService.findOfferStats();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

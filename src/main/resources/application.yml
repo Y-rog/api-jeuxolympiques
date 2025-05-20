@@ -18,7 +18,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -43,7 +43,6 @@ admin:
   username: ${ADMIN_USERNAME}
   password: ${ADMIN_PASSWORD}
 
-
 cart:
   item:
-    item_expiration-duration: ${ITEM_EXPIRATION_DURATION}
+    item_expiration_duration: ${ITEM_EXPIRATION_DURATION}

@@ -1,0 +1,130 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > OfferCategoryDTO</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.dto.offerCategory</a>
+</div>
+
+<h1>Coverage Summary for Class: OfferCategoryDTO (com.yrog.apijeuxolympiques.dto.offerCategory)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OfferCategoryDTO</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.dto.offerCategory;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import jakarta.validation.constraints.*;
+&nbsp;import lombok.Getter;
+&nbsp;import lombok.Setter;
+&nbsp;
+&nbsp;@Getter
+&nbsp;@Setter
+&nbsp;@Schema(description = &quot;Catégorie d&#39;offre (ex: Solo, Duo, Familiale)&quot;)
+<b class="nc">&nbsp;public class OfferCategoryDTO {</b>
+&nbsp;
+&nbsp;    @NotNull(message = &quot;Le titre est obligatoire&quot;)
+&nbsp;    @Size(min = 2, max = 30, message = &quot;Le titre doit faire entre 2 et 30 caractères&quot;)
+&nbsp;    @Schema(description = &quot;Nom de la catégorie&quot;, example = &quot;Trio&quot;)
+&nbsp;    private String title;
+&nbsp;
+&nbsp;    @NotNull(message = &quot;Le nombre de places par offre est obligatoire&quot;)
+&nbsp;    @Min(value = 1, message = &quot;Il faut au moins 1 place par offre&quot;)
+&nbsp;    @Max(value = 10, message = &quot;Le nombre maximum de places par offre est 10&quot;)
+&nbsp;    @Schema(description = &quot;Nombre de places incluses dans une offre de cette catégorie&quot;, example = &quot;3&quot;)
+&nbsp;    private Integer placesPerOffer;
+&nbsp;}
+&nbsp;
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

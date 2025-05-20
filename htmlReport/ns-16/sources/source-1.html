@@ -1,0 +1,97 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CartRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.repository</a>
+</div>
+
+<h1>Coverage Summary for Class: CartRepository (com.yrog.apijeuxolympiques.repository)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">CartRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.repository;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.enums.CartStatus;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Cart;
+&nbsp;import com.yrog.apijeuxolympiques.security.models.User;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;
+&nbsp;@Repository
+&nbsp;public interface CartRepository extends JpaRepository&lt;Cart, Long&gt; {
+&nbsp;    Optional&lt;Cart&gt; findByUser(User user);
+&nbsp;
+&nbsp;    Optional&lt;Cart&gt; findByUserAndStatus(User user, CartStatus cartStatus);
+&nbsp;
+&nbsp;    List&lt;Cart&gt; findByItems_Offer_Event_EventId(Long eventId);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT c FROM Cart c LEFT JOIN FETCH c.items WHERE c.cartId = :cartId&quot;)
+&nbsp;    Optional&lt;Cart&gt; findByIdWithItems(@Param(&quot;cartId&quot;) Long cartId);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT c FROM Cart c WHERE c.cartId = :cartId&quot;)
+&nbsp;    Optional&lt;Cart&gt; findCartById(@Param(&quot;cartId&quot;) Long cartId);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

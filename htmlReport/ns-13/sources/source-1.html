@@ -1,0 +1,236 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CartItemServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: CartItemServiceImpl (com.yrog.apijeuxolympiques.service.impl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CartItemServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3,2%
+  </span>
+  <span class="absValue">
+    (1/31)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CartItemServiceImpl$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3,2%
+  </span>
+  <span class="absValue">
+    (1/31)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.service.impl;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
+&nbsp;import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
+&nbsp;import com.yrog.apijeuxolympiques.enums.CartStatus;
+&nbsp;import com.yrog.apijeuxolympiques.mapper.CartItemMapper;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Cart;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.CartItem;
+&nbsp;import com.yrog.apijeuxolympiques.repository.CartItemRepository;
+&nbsp;import com.yrog.apijeuxolympiques.repository.CartRepository;
+&nbsp;import com.yrog.apijeuxolympiques.service.CartItemService;
+&nbsp;import jakarta.persistence.EntityNotFoundException;
+&nbsp;import org.springframework.amqp.rabbit.core.RabbitTemplate;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class CartItemServiceImpl implements CartItemService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private RabbitTemplate rabbitTemplate;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private CartRepository cartRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private CartItemRepository cartItemRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private CartItemMapper cartItemMapper;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;CartItemResponse&gt; findCartItemsByCartId(Long cartId) {
+<b class="nc">&nbsp;        Cart cart = cartRepository.findById(cartId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Cart not found&quot;));</b>
+<b class="nc">&nbsp;        List&lt;CartItem&gt; items = cartItemRepository.findByCart(cart);</b>
+<b class="nc">&nbsp;        return cartItemMapper.toResponseList(items);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public CartItemResponse addItemToCart(Long cartId, CartItemCreateRequest request) {
+<b class="nc">&nbsp;        Cart cart = cartRepository.findById(cartId).orElseThrow();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (cart.getStatus() == CartStatus.PAYE) {</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(&quot;Le panier a déjà été payé et ne peut plus être modifié.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Map&lt;String, Object&gt; message = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        message.put(&quot;action&quot;, &quot;add&quot;);</b>
+<b class="nc">&nbsp;        message.put(&quot;cartId&quot;, cartId);</b>
+<b class="nc">&nbsp;        message.put(&quot;offerId&quot;, request.getOfferId());</b>
+<b class="nc">&nbsp;        message.put(&quot;priceAtPurchase&quot;, request.getPriceAtPurchase());</b>
+&nbsp;
+<b class="nc">&nbsp;        rabbitTemplate.convertAndSend(&quot;cartItemExchange&quot;, &quot;cartitem.add&quot;, message);</b>
+<b class="nc">&nbsp;        return null; // À adapter si tu veux retourner une confirmation utilisateur</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Transactional
+&nbsp;    public void removeItemFromCart(Long cartId, Long cartItemId) {
+<b class="nc">&nbsp;        Cart cart = cartRepository.findById(cartId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new RuntimeException(&quot;Cart not found&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        if (cart.getStatus() == CartStatus.PAYE) {</b>
+<b class="nc">&nbsp;            throw new IllegalStateException(&quot;Le panier a déjà été payé et ne peut plus être modifié.&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        CartItem itemToRemove = cartItemRepository.findById(cartItemId)</b>
+<b class="nc">&nbsp;                .orElseThrow(() -&gt; new RuntimeException(&quot;Item not found&quot;));</b>
+&nbsp;
+&nbsp;        // Retirer l&#39;article du panier et supprimer
+<b class="nc">&nbsp;        cart.getItems().remove(itemToRemove);</b>
+<b class="nc">&nbsp;        cartItemRepository.delete(itemToRemove);</b>
+&nbsp;
+&nbsp;        // Recalculer le montant total du panier sans utiliser quantity
+<b class="nc">&nbsp;        cart.setAmount(cart.getItems().stream()</b>
+<b class="nc">&nbsp;                .map(CartItem::getPriceAtPurchase)</b>
+<b class="nc">&nbsp;                .reduce(BigDecimal.ZERO, BigDecimal::add));</b>
+&nbsp;
+<b class="nc">&nbsp;        cartRepository.save(cart);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public CartItem getCartItem(Long cartItemId) {
+<b class="nc">&nbsp;        Optional&lt;CartItem&gt; cartItemOptional = cartItemRepository.findById(cartItemId);</b>
+<b class="nc">&nbsp;        if (cartItemOptional.isPresent()) {</b>
+<b class="nc">&nbsp;            return cartItemOptional.get();</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;CartItem not found with ID: &quot; + cartItemId);</b>
+&nbsp;
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

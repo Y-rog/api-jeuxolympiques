@@ -1,0 +1,107 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > OfferService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.service</a>
+</div>
+
+<h1>Coverage Summary for Class: OfferService (com.yrog.apijeuxolympiques.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">OfferService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.service;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
+&nbsp;import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
+&nbsp;import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
+&nbsp;import com.yrog.apijeuxolympiques.dto.offer.OfferSalesStatsDTO;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Offer;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public interface OfferService {
+&nbsp;
+&nbsp;    OfferDTO createOffer(OfferDTO offerDTO);
+&nbsp;
+&nbsp;    List&lt;Offer&gt; getAllOffers();
+&nbsp;
+&nbsp;    OfferDTO getOfferById(Long id);
+&nbsp;
+&nbsp;    OfferDTO updateOffer(Long id, OfferDTO offerDTO);
+&nbsp;
+&nbsp;    boolean deleteOffer(Long id);
+&nbsp;
+&nbsp;    List&lt;OfferDetailDTO&gt; getAllOffersDetail();
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    void updateOffersAvailabilityByEvent(Long eventId);
+&nbsp;
+&nbsp;    List&lt;OfferDetailAdminRequest&gt; getAllOffersDetailForAdmin();
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    boolean checkAvailabilityForOffer(Long offerId, int requestedQuantity);
+&nbsp;
+&nbsp;    boolean toggleOfferActive(Long offerId);
+&nbsp;
+&nbsp;    List&lt;OfferSalesStatsDTO&gt; findOfferStats();
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

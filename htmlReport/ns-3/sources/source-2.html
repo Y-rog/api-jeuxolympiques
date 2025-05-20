@@ -1,0 +1,201 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > CartController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: CartController (com.yrog.apijeuxolympiques.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CartController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16,7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5,9%
+  </span>
+  <span class="absValue">
+    (1/17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.controller;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.dto.cart.CartCreateRequest;
+&nbsp;import com.yrog.apijeuxolympiques.dto.cart.CartResponse;
+&nbsp;import com.yrog.apijeuxolympiques.dto.cartItem.CartItemQRCodeDTO;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.Cart;
+&nbsp;import com.yrog.apijeuxolympiques.repository.CartRepository;
+&nbsp;import com.yrog.apijeuxolympiques.service.CartItemService;
+&nbsp;import com.yrog.apijeuxolympiques.service.CartService;
+&nbsp;import com.yrog.apijeuxolympiques.service.QRCodeService;
+&nbsp;import jakarta.persistence.EntityNotFoundException;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.server.ResponseStatusException;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;api-jeuxolympiques/cart&quot;)
+<b class="fc">&nbsp;public class CartController {</b>
+&nbsp;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private CartService cartService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private QRCodeService qrCodeService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private CartRepository cartRepository;
+&nbsp;
+&nbsp;    // Créer un panier
+&nbsp;    @PostMapping
+&nbsp;    public ResponseEntity&lt;CartResponse&gt; createCart(@RequestBody CartCreateRequest request) {
+<b class="nc">&nbsp;        CartResponse response = cartService.createCart(request);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(201).body(response);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Trouver le panier de l&#39;utilisateur
+&nbsp;    @GetMapping
+&nbsp;    public ResponseEntity&lt;CartResponse&gt; findCartByUser() {
+<b class="nc">&nbsp;        CartResponse cartResponse = cartService.findCartByUser(); // On récupère un DTO</b>
+<b class="nc">&nbsp;        if (cartResponse == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.notFound().build(); // Retourne un 404 si le panier n&#39;est pas trouvé</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.ok(cartResponse);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Récupérer un panier par son ID
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;CartResponse&gt; getCartById(@PathVariable Long id) {
+<b class="nc">&nbsp;        CartResponse cartResponse = cartService.getCartById(id); // On retourne un DTO ici aussi</b>
+<b class="nc">&nbsp;        if (cartResponse == null) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.notFound().build(); // Retourne un 404 si panier introuvable</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.ok(cartResponse);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Supprimer un panier par ID
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteCart(@PathVariable Long id) {
+&nbsp;        try {
+<b class="nc">&nbsp;            cartService.deleteCart(id); // Appelle la méthode qui supprime le panier</b>
+<b class="nc">&nbsp;            return ResponseEntity.noContent().build(); // 204 No Content, suppression réussie</b>
+&nbsp;        } catch (EntityNotFoundException e) {
+<b class="nc">&nbsp;            return ResponseEntity.notFound().build(); // 404 Not Found si panier introuvable</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/{id}/confirm-payment&quot;)
+&nbsp;    public ResponseEntity&lt;String&gt; confirmPayment(@PathVariable Long id, @RequestParam boolean simulateFailure) {
+&nbsp;        try {
+<b class="nc">&nbsp;            cartService.confirmPaymentAndGenerateQRCode(id, simulateFailure);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(&quot;Paiement &quot; + (simulateFailure ? &quot;échoué&quot; : &quot;validé&quot;) + &quot; avec succès.&quot;);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(&quot;Erreur lors du paiement : &quot; + e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+&nbsp;
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>

@@ -32,8 +32,8 @@ public class CartItemConsumer {
     @Autowired
     private OfferService offerService;
 
-     @Value("${item_expiration-duration}")
-     private Long itemExpirationDuration;
+    @Value("${cart.item.item_expiration_duration}")
+    private Long itemExpirationDuration;
 
 
 

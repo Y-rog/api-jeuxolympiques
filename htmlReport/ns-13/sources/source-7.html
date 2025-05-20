@@ -1,0 +1,163 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TicketServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.yrog.apijeuxolympiques.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: TicketServiceImpl (com.yrog.apijeuxolympiques.service.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TicketServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33,3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8,3%
+  </span>
+  <span class="absValue">
+    (1/12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.yrog.apijeuxolympiques.service.impl;
+&nbsp;
+&nbsp;import com.yrog.apijeuxolympiques.dto.ticket.TicketResponse;
+&nbsp;import com.yrog.apijeuxolympiques.enums.CartStatus;
+&nbsp;import com.yrog.apijeuxolympiques.mapper.TicketMapper;
+&nbsp;import com.yrog.apijeuxolympiques.pojo.CartItem;
+&nbsp;import com.yrog.apijeuxolympiques.repository.CartItemRepository;
+&nbsp;import com.yrog.apijeuxolympiques.security.repository.UserRepository;
+&nbsp;import com.yrog.apijeuxolympiques.service.QRCodeService;
+&nbsp;import com.yrog.apijeuxolympiques.service.TicketService;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.Base64;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class TicketServiceImpl implements TicketService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private TicketMapper ticketMapper;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private QRCodeService qrCodeService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRepository userRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private CartItemRepository cartItemRepository;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public TicketResponse generateTicket(CartItem cartItem) {
+<b class="nc">&nbsp;        TicketResponse ticketResponse = ticketMapper.toDto(cartItem);</b>
+<b class="nc">&nbsp;        String qrCodeKey = cartItem.getCart().getTransactionUuid() + &quot;_&quot; + cartItem.getCart().getUser().getSecretKey();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            byte[] qrCodeBytes = qrCodeService.generateQRCode(qrCodeKey, 200, 200);</b>
+<b class="nc">&nbsp;            String base64QrCode = &quot;data:image/png;base64,&quot; + Base64.getEncoder().encodeToString(qrCodeBytes);</b>
+<b class="nc">&nbsp;            ticketResponse.setQrCode(base64QrCode);</b>
+&nbsp;        } catch (Exception e) {
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;Erreur lors de la génération du QR code&quot;, e);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ticketResponse;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;TicketResponse&gt; generateTicketsByUser(Long userId) {
+<b class="nc">&nbsp;        List&lt;CartItem&gt; cartItems = cartItemRepository.findByCartUserIdAndCartStatus(userId, CartStatus.PAYE);</b>
+<b class="nc">&nbsp;        return cartItems.stream()</b>
+<b class="nc">&nbsp;                .map(this::generateTicket)</b>
+<b class="nc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-05-20 23:34</div>
+</div>
+</body>
+</html>
