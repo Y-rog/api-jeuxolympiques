@@ -15,6 +15,7 @@ jo:
   jwtSecret: ${JWT_SECRET}
   jwtExpirationInMs: 86400000
 frontUrl: ${FRONT_URL}
+swaggerUrl: ${SWAGGER_URL}
 admin:
   firstname: ${ADMIN_FIRSTNAME}
   lastname: ${ADMIN_LASTNAME}

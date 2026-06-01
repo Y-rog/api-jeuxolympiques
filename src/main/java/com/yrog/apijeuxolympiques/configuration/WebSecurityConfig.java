@@ -34,6 +34,9 @@ public class WebSecurityConfig {
     @Value("${frontUrl}")
     private String frontUrl;
 
+    @Value("${swaggerUrl}")
+    private String swaggerUrl;
+
     @Autowired
     UserDetailsService userDetailsService;
 
@@ -71,11 +74,12 @@ public class WebSecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(frontUrl)
+                        .allowedOrigins(
+                                frontUrl, swaggerUrl
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
-
             }
         };
     }
