@@ -1,7 +1,7 @@
 package com.yrog.apijeuxolympiques.security.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.yrog.apijeuxolympiques.security.models.User;
+import com.yrog.apijeuxolympiques.entity.User;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

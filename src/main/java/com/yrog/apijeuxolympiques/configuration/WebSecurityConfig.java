@@ -2,8 +2,7 @@ package com.yrog.apijeuxolympiques.configuration;
 
 import com.yrog.apijeuxolympiques.security.jwt.AuthEntryPointJwt;
 import com.yrog.apijeuxolympiques.security.jwt.AuthTokenFilter;
-import com.yrog.apijeuxolympiques.security.models.ERole;
-import jakarta.validation.constraints.NotNull;
+import com.yrog.apijeuxolympiques.entity.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

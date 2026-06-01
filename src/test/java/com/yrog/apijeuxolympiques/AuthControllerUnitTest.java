@@ -2,8 +2,8 @@ package com.yrog.apijeuxolympiques;
 
 import com.yrog.apijeuxolympiques.controller.AuthController;
 import com.yrog.apijeuxolympiques.security.jwt.JwtUtils;
-import com.yrog.apijeuxolympiques.security.request.LoginRequest;
-import com.yrog.apijeuxolympiques.security.response.JwtResponse;
+import com.yrog.apijeuxolympiques.dto.auth.LoginRequest;
+import com.yrog.apijeuxolympiques.dto.auth.JwtResponse;
 import com.yrog.apijeuxolympiques.security.service.UserDetailsImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

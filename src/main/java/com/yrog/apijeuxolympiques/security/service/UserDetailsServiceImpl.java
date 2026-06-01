@@ -1,7 +1,7 @@
 package com.yrog.apijeuxolympiques.security.service;
 
-import com.yrog.apijeuxolympiques.security.models.User;
-import com.yrog.apijeuxolympiques.security.repository.UserRepository;
+import com.yrog.apijeuxolympiques.entity.User;
+import com.yrog.apijeuxolympiques.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

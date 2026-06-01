@@ -1,7 +1,6 @@
 package com.yrog.apijeuxolympiques.entity;
 
 import com.yrog.apijeuxolympiques.enums.CartStatus;
-import com.yrog.apijeuxolympiques.security.models.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

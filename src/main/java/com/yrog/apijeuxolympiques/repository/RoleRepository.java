@@ -1,7 +1,7 @@
-package com.yrog.apijeuxolympiques.security.repository;
+package com.yrog.apijeuxolympiques.repository;
 
-import com.yrog.apijeuxolympiques.security.models.ERole;
-import com.yrog.apijeuxolympiques.security.models.Role;
+import com.yrog.apijeuxolympiques.entity.ERole;
+import com.yrog.apijeuxolympiques.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.yrog.apijeuxolympiques.security.models;
+package com.yrog.apijeuxolympiques.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

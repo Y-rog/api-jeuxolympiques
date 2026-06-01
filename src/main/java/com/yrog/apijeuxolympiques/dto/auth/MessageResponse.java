@@ -1,8 +1,6 @@
-package com.yrog.apijeuxolympiques.security.response;
+package com.yrog.apijeuxolympiques.dto.auth;
 
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class MessageResponse {

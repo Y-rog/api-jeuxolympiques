@@ -1,13 +1,10 @@
 package com.yrog.apijeuxolympiques.configuration;
 
-import com.yrog.apijeuxolympiques.repository.EventRepository;
-import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
-import com.yrog.apijeuxolympiques.repository.OfferRepository;
-import com.yrog.apijeuxolympiques.security.models.ERole;
-import com.yrog.apijeuxolympiques.security.models.Role;
-import com.yrog.apijeuxolympiques.security.models.User;
-import com.yrog.apijeuxolympiques.security.repository.RoleRepository;
-import com.yrog.apijeuxolympiques.security.repository.UserRepository;
+import com.yrog.apijeuxolympiques.entity.ERole;
+import com.yrog.apijeuxolympiques.entity.Role;
+import com.yrog.apijeuxolympiques.entity.User;
+import com.yrog.apijeuxolympiques.repository.RoleRepository;
+import com.yrog.apijeuxolympiques.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

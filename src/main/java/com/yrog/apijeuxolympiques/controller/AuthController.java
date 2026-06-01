@@ -1,15 +1,15 @@
 package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.security.jwt.JwtUtils;
-import com.yrog.apijeuxolympiques.security.models.ERole;
-import com.yrog.apijeuxolympiques.security.models.Role;
-import com.yrog.apijeuxolympiques.security.models.User;
-import com.yrog.apijeuxolympiques.security.repository.RoleRepository;
-import com.yrog.apijeuxolympiques.security.repository.UserRepository;
-import com.yrog.apijeuxolympiques.security.request.LoginRequest;
-import com.yrog.apijeuxolympiques.security.request.SignupRequest;
-import com.yrog.apijeuxolympiques.security.response.JwtResponse;
-import com.yrog.apijeuxolympiques.security.response.MessageResponse;
+import com.yrog.apijeuxolympiques.entity.ERole;
+import com.yrog.apijeuxolympiques.entity.Role;
+import com.yrog.apijeuxolympiques.entity.User;
+import com.yrog.apijeuxolympiques.repository.RoleRepository;
+import com.yrog.apijeuxolympiques.repository.UserRepository;
+import com.yrog.apijeuxolympiques.dto.auth.LoginRequest;
+import com.yrog.apijeuxolympiques.dto.auth.SignupRequest;
+import com.yrog.apijeuxolympiques.dto.auth.JwtResponse;
+import com.yrog.apijeuxolympiques.dto.auth.MessageResponse;
 import com.yrog.apijeuxolympiques.security.service.AuthService;
 import com.yrog.apijeuxolympiques.security.service.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -20,7 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 

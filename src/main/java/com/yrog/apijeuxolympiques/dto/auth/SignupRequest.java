@@ -1,4 +1,4 @@
-package com.yrog.apijeuxolympiques.security.request;
+package com.yrog.apijeuxolympiques.dto.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
