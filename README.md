@@ -1,133 +1,122 @@
-# API Jeux Olympiques – Application de billetterie en ligne
+# 🏅 API Billetterie Jeux Olympiques — Backend Spring Boot
 
-Cette API constitue le backend de l'application de billetterie des Jeux Olympiques 2024. Elle permet à des utilisateurs de réserver des billets en ligne, de les payer (simulation), et de récupérer leurs e-billets contenant un QR code unique. Un espace administrateur permet de gérer les événements et les offres.
+API REST backend de l'application de billetterie des Jeux Olympiques.
+Permet la gestion des événements, la réservation de billets avec simulation de paiement et la génération d'e-billets avec QR code unique.
 
-##  Liens importants
+## 🔗 Liens
 
--  Front-end (Angular 19) : [https://jeuxolympiques.gregoryfulgueiras.com](https://jeuxolympiques.gregoryfulgueiras.com)
--  Swagger API Docs : [https://api-jeuxolympiques.gregoryfulgueiras.com/swagger-ui/index.html](https://api-jeuxolympiques.gregoryfulgueiras.com/swagger-ui/index.html)
--  GitHub API : [https://github.com/Y-rog/api-jeuxolympiques](https://github.com/Y-rog/api-jeuxolympiques)
--  GitHub Front : [https://github.com/Y-rog/jeuxolympiques](https://github.com/Y-rog/jeuxolympiques)
+| | URL |
+|---|---|
+| 🌐 Front-end | https://jeuxolympiques-kappa.vercel.app |
+| 📖 Swagger | https://web-production-acdd9.up.railway.app/swagger-ui/index.html |
+| 🔙 GitHub Front | https://github.com/Y-rog/jeuxolympiques |
 
----
+## 🧪 Compte de démonstration
 
-##  Fonctionnalités principales
+| Rôle | Email | Mot de passe |
+|---|---|---|
+| Utilisateur | usertest@mail.com | Test123@ |
 
--  Inscription / Connexion d’utilisateurs
--  Ajout d’offres au panier et simulation de paiement
--  Génération d’e-billets avec QR code unique (UUID utilisateur + UUID transaction)
--  Authentification via Spring Security + JWT (stocké en sessionStorage)
--  Espace administrateur :CRUD sur événements et offres, gestion de la plublication des offres, visualisation des ventes par offre
+> 💡 Un compte admin est disponible sur demande pour les recruteurs.
 
+## ✨ Fonctionnalités
 
->  Le compte administrateur ne peut pas être créé depuis l’application. Ils sont générer par l'applicaiton au démarrage.
->  Les identifiants sont stockés dans le fichier `.env`.
+- Inscription / Connexion avec JWT
+- Consultation des événements et offres disponibles
+- Ajout d'offres au panier via messagerie asynchrone (RabbitMQ)
+- Simulation de paiement
+- Génération d'e-billets avec QR code unique (ZXing)
+- Espace administrateur : CRUD événements/offres, statistiques de ventes
 
----
+## 🛠️ Stack technique
 
-##  Stack technique
+| Technologie | Rôle |
+|---|---|
+| Java 21 + Spring Boot 3.4.3 | Framework backend |
+| Spring Security + JWT | Authentification |
+| PostgreSQL | Base de données |
+| RabbitMQ / CloudAMQP | Messagerie asynchrone |
+| MapStruct | Mapping entités/DTOs |
+| ZXing | Génération QR code |
+| SpringDoc OpenAPI | Documentation Swagger |
+| Docker | Containerisation |
+| Railway | Déploiement cloud |
 
-- **Backend :** Java 21, Spring Boot 3.4.3
-- **Base de données :** PostgreSQL 
-- **Broker :** RabbitMQ 
-- **Documentation :** SpringDoc OpenAPI (Swagger)
-- **QR Code :** ZXing
-- **Mapper :** MapStruct
-- **Authentification :** Spring Security + JWT 
+## 🚀 Installation locale
 
----
-
-##  Déploiement
-
-L’API est déployée sur **Heroku**, avec :
-
-- Addon **Heroku Postgres**
-- Addon **CloudAMQP** (RabbitMQ)
-
----
-
-##  Tests
-
-Quelques tests unitaires sont disponibles via JUnit et Spring Boot Test.
-
----
-
-##  Lancer le projet localement
-
-###  Prérequis
-
+### Prérequis
 - Java 21
 - Maven 3.9+
-- PostgreSQL (ou configuration via `.env`)
-- RabbitMQ (local ou CloudAMQP)
+- PostgreSQL
+- RabbitMQ
 
-###  Configuration `.env`
-
-Créer un fichier `.env` à la racine avec les variables suivantes :
-
-```env
-DB_URL=jdbc:postgresql://<host>:<port>/<dbname>
-DB_USERNAME=<your_db_username>
-DB_PASSWORD=<your_db_password>
-
-RABBITMQ_HOST=localhost (par défaut)
-RABBITMQ_PORT=5672 (par défaut)
-RABBITMQ_USERNAME=guest (par défaut)
-RABBITMQ_PASSWORD=guest (par défaut)
-RABBITMQ_VIRTUAL_HOST=/ (par défaut)
-RABBITMQ_SSL_ENABLED=false (par défaut)
-
-JWT_SECRET=<your_jwt_secret>>
-
-FRONT_URL=http://localhost:4200 (par défaut)
-
-ADMIN_FIRSTNAME=<your_admin_firstname>
-ADMIN_LASTNAME=<your_admin_lastname>
-ADMIN_USERNAME=<your_admin_username> (email)
-ADMIN_PASSWORD=<your_admin_password>
-
-ITEM_EXPIRATION_DURATION=3600 (temps de conservation d'un item dans le panier)
-```
-
-### Commandes Maven
+### Étapes
 
 ```bash
-# Pour lancer le projet
+git clone https://github.com/Y-rog/api-jeuxolympiques.git
+cd api-jeuxolympiques
+```
+
+Créer un fichier `.env` à la racine :
+
+```env
+DB_URL=jdbc:postgresql://localhost:5432/jeuxolympiques
+DB_USERNAME=postgres
+DB_PASSWORD=votremotdepasse
+
+RABBITMQ_HOST=localhost
+RABBITMQ_PORT=5672
+RABBITMQ_USERNAME=guest
+RABBITMQ_PASSWORD=guest
+RABBITMQ_VIRTUAL_HOST=/
+RABBITMQ_SSL_ENABLED=false
+
+JWT_SECRET=votresecretjwtminimum32caracteres
+
+FRONT_URL=http://localhost:4200
+SWAGGER_URL=http://localhost:8081
+
+ADMIN_FIRSTNAME=Admin
+ADMIN_LASTNAME=Admin
+ADMIN_USERNAME=admin@admin.com
+ADMIN_PASSWORD=votremotdepasse
+
+ITEM_EXPIRATION_DURATION=60
+```
+
+Lancer l'application :
+
+```bash
 mvn spring-boot:run
 ```
 
----
+Accès Swagger : `http://localhost:8081/swagger-ui/index.html`
 
-##  Authentification & Sécurité
+## 🔒 Sécurité
 
-- L’authentification repose sur **JWT** générés à la connexion et stockés côté front dans le `sessionStorage`.
-- Les routes sensibles sont protégées via Spring Security.
-- Chaque e-billet contient un **QR code sécurisé**, généré à partir de la concaténation :
-secret_ket utilisateur + UUID transaction
-- BCrypt : Pour hacher et donc protéger les mots de passe en BDD
-- Validation des formulaires
+- Authentification JWT générés à la connexion
+- Mots de passe hashés avec BCrypt
+- Routes protégées via Spring Security
+- QR code sécurisé : clé secrète utilisateur + UUID transaction
+- Validation des entrées avec Jakarta Validation
 
+## 🧪 Tests
 
----
+Tests unitaires disponibles via JUnit et Spring Boot Test :
 
-##  Fonctionnalités à venir
+```bash
+mvn test
+```
 
--  Intégration de paiements réels (ex: Stripe)
--  Optimiser les performances de l'application
--  Gestion des SAV
--  Tableau de bord plus détaillé pour l’admin
--  Authentification 2FA
--  Envoi des e-billets par mail
--  Gestion des données utilisateurs 
+## 🔮 Évolutions futures
 
----
+- Paiement réel via Stripe
+- Authentification 2FA
+- Envoi des e-billets par email
+- Notifications à l'approche des événements
+- Gestion des remboursements (SAV)
+- Tableau de bord admin enrichi
 
-##  Auteur
+## 👤 Auteur
 
-Projet développé par **Grégory Fulgueiras** dans le cadre de la formation **Développeur d’applications** chez **Studi**.
-
----
-
-##  Licence
-
-Ce projet est à but éducatif et non destiné à une utilisation commerciale.
+Grégory Fulgueiras — [Portfolio](https://y-rog.com) · [LinkedIn](https://www.linkedin.com/in/fulgueiras-grégory-887267136/)
