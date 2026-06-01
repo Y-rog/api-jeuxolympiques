@@ -2,8 +2,7 @@ package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.offerCategory.OfferCategoryDTO;
 import com.yrog.apijeuxolympiques.mapper.impl.OfferCategoryMapperImpl;
-import com.yrog.apijeuxolympiques.pojo.Offer;
-import com.yrog.apijeuxolympiques.pojo.OfferCategory;
+import com.yrog.apijeuxolympiques.entity.OfferCategory;
 import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.service.OfferCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class OfferCategoryServiceImpl implements OfferCategoryService {

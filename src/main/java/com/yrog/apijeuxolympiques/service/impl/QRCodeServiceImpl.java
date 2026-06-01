@@ -5,7 +5,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemQRCodeDTO;
-import com.yrog.apijeuxolympiques.pojo.Cart;
+import com.yrog.apijeuxolympiques.entity.Cart;
 import com.yrog.apijeuxolympiques.service.QRCodeService;
 import org.springframework.stereotype.Service;
 

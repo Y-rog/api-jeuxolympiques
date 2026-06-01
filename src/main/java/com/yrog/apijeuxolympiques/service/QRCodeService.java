@@ -1,7 +1,7 @@
 package com.yrog.apijeuxolympiques.service;
 
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemQRCodeDTO;
-import com.yrog.apijeuxolympiques.pojo.Cart;
+import com.yrog.apijeuxolympiques.entity.Cart;
 
 import java.util.List;
 

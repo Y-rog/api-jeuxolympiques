@@ -3,11 +3,9 @@ package com.yrog.apijeuxolympiques.mapper.impl;
 import com.yrog.apijeuxolympiques.dto.cart.CartCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cart.CartResponse;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
-import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
 import com.yrog.apijeuxolympiques.mapper.CartItemMapper;
 import com.yrog.apijeuxolympiques.mapper.CartMapper;
-import com.yrog.apijeuxolympiques.pojo.Cart;
-import com.yrog.apijeuxolympiques.pojo.CartItem;
+import com.yrog.apijeuxolympiques.entity.Cart;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -2,8 +2,7 @@ package com.yrog.apijeuxolympiques.service;
 
 import com.yrog.apijeuxolympiques.dto.cart.CartCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cart.CartResponse;
-import com.yrog.apijeuxolympiques.pojo.Cart;
-import com.yrog.apijeuxolympiques.pojo.CartItem;
+import com.yrog.apijeuxolympiques.entity.Cart;
 
 
 public interface CartService {

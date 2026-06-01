@@ -1,0 +1,22 @@
+# Configuration de développement local
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/jeuxolympiques
+    username: postgres
+    password: admin@postgre
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    ssl:
+      enabled: false
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8

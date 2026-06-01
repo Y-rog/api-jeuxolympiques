@@ -1,48 +1,25 @@
-# Configuration commun à tous les environnements
+# Configuration commune à tous les environnements
 spring:
+  profiles:
+    active: dev
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST}
-    port: ${RABBITMQ_PORT}
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}
-    virtual-host: ${RABBITMQ_VIRTUAL_HOST}
-    ssl:
-      enabled: ${RABBITMQ_SSL_ENABLED}
-
   jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     defer-datasource-initialization: true
-
-  sql:
-    init:
-      mode: always
-
 server:
   port: ${PORT:8081}
-
 jo:
   jwtSecret: ${JWT_SECRET}
   jwtExpirationInMs: 86400000
-
 frontUrl: ${FRONT_URL}
-
 admin:
   firstname: ${ADMIN_FIRSTNAME}
   lastname: ${ADMIN_LASTNAME}
   username: ${ADMIN_USERNAME}
   password: ${ADMIN_PASSWORD}
-
 cart:
   item:
     item_expiration_duration: ${ITEM_EXPIRATION_DURATION}

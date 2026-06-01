@@ -2,12 +2,11 @@ package com.yrog.apijeuxolympiques.repository;
 
 import com.yrog.apijeuxolympiques.dto.cartItem.SalesByOfferDTO;
 import com.yrog.apijeuxolympiques.enums.CartStatus;
-import com.yrog.apijeuxolympiques.pojo.Cart;
-import com.yrog.apijeuxolympiques.pojo.CartItem;
-import com.yrog.apijeuxolympiques.pojo.Offer;
+import com.yrog.apijeuxolympiques.entity.Cart;
+import com.yrog.apijeuxolympiques.entity.CartItem;
+import com.yrog.apijeuxolympiques.entity.Offer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

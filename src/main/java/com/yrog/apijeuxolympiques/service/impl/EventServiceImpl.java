@@ -2,25 +2,19 @@ package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
 import com.yrog.apijeuxolympiques.mapper.EventMapper;
-import com.yrog.apijeuxolympiques.pojo.CartItem;
-import com.yrog.apijeuxolympiques.pojo.Event;
-import com.yrog.apijeuxolympiques.pojo.Offer;
+import com.yrog.apijeuxolympiques.entity.CartItem;
+import com.yrog.apijeuxolympiques.entity.Event;
 import com.yrog.apijeuxolympiques.repository.CartRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
-import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.service.EventService;
-import com.yrog.apijeuxolympiques.service.OfferService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.yrog.apijeuxolympiques.pojo.Cart;
-import org.springframework.web.server.ResponseStatusException;
+import com.yrog.apijeuxolympiques.entity.Cart;
 
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 
 @Service

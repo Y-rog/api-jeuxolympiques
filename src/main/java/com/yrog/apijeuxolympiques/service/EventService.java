@@ -1,7 +1,7 @@
 package com.yrog.apijeuxolympiques.service;
 
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
-import com.yrog.apijeuxolympiques.pojo.Event;
+import com.yrog.apijeuxolympiques.entity.Event;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;

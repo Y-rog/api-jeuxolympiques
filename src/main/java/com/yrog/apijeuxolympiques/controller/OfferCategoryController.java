@@ -1,8 +1,7 @@
 package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.offerCategory.OfferCategoryDTO;
-import com.yrog.apijeuxolympiques.pojo.Offer;
-import com.yrog.apijeuxolympiques.pojo.OfferCategory;
+import com.yrog.apijeuxolympiques.entity.OfferCategory;
 import com.yrog.apijeuxolympiques.service.OfferCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

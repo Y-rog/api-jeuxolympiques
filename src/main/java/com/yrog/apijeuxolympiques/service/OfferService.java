@@ -4,7 +4,7 @@ import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferSalesStatsDTO;
-import com.yrog.apijeuxolympiques.pojo.Offer;
+import com.yrog.apijeuxolympiques.entity.Offer;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
