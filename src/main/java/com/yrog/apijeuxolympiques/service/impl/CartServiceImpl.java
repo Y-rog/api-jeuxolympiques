@@ -118,6 +118,7 @@ public class CartServiceImpl implements CartService {
             cart.setUser(user);
             cart.setCreatedAt(LocalDateTime.now());
             cart.setStatus(CartStatus.EN_ATTENTE);
+            cart.setUpdatedAt(LocalDateTime.now());
             cart = cartRepository.save(cart);
         }
 
