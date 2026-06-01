@@ -2,9 +2,7 @@ package com.yrog.apijeuxolympiques;
 
 import com.yrog.apijeuxolympiques.controller.EventController;
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
-import com.yrog.apijeuxolympiques.mapper.EventMapper;
-import com.yrog.apijeuxolympiques.pojo.Event;
-import com.yrog.apijeuxolympiques.repository.EventRepository;
+import com.yrog.apijeuxolympiques.entity.Event;
 import com.yrog.apijeuxolympiques.service.EventService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

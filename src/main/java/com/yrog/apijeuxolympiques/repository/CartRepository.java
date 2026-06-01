@@ -1,7 +1,7 @@
 package com.yrog.apijeuxolympiques.repository;
 
 import com.yrog.apijeuxolympiques.enums.CartStatus;
-import com.yrog.apijeuxolympiques.pojo.Cart;
+import com.yrog.apijeuxolympiques.entity.Cart;
 import com.yrog.apijeuxolympiques.security.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

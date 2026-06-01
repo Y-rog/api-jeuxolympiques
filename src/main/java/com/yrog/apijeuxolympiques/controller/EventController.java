@@ -1,7 +1,7 @@
 package com.yrog.apijeuxolympiques.controller;
 
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
-import com.yrog.apijeuxolympiques.pojo.Event;
+import com.yrog.apijeuxolympiques.entity.Event;
 import com.yrog.apijeuxolympiques.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -6,14 +6,13 @@ import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferSalesStatsDTO;
 import com.yrog.apijeuxolympiques.mapper.impl.OfferMapperImpl;
-import com.yrog.apijeuxolympiques.pojo.Event;
-import com.yrog.apijeuxolympiques.pojo.Offer;
-import com.yrog.apijeuxolympiques.pojo.OfferCategory;
+import com.yrog.apijeuxolympiques.entity.Event;
+import com.yrog.apijeuxolympiques.entity.Offer;
+import com.yrog.apijeuxolympiques.entity.OfferCategory;
 import com.yrog.apijeuxolympiques.repository.CartItemRepository;
 import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
-import com.yrog.apijeuxolympiques.service.CartItemService;
 import com.yrog.apijeuxolympiques.service.EventService;
 import com.yrog.apijeuxolympiques.service.OfferService;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;

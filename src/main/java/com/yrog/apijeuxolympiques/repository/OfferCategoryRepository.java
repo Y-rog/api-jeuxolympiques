@@ -1,6 +1,6 @@
 package com.yrog.apijeuxolympiques.repository;
 
-import com.yrog.apijeuxolympiques.pojo.OfferCategory;
+import com.yrog.apijeuxolympiques.entity.OfferCategory;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;

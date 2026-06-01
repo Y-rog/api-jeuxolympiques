@@ -3,7 +3,7 @@ package com.yrog.apijeuxolympiques.service.impl;
 import com.yrog.apijeuxolympiques.dto.ticket.TicketResponse;
 import com.yrog.apijeuxolympiques.enums.CartStatus;
 import com.yrog.apijeuxolympiques.mapper.TicketMapper;
-import com.yrog.apijeuxolympiques.pojo.CartItem;
+import com.yrog.apijeuxolympiques.entity.CartItem;
 import com.yrog.apijeuxolympiques.repository.CartItemRepository;
 import com.yrog.apijeuxolympiques.security.repository.UserRepository;
 import com.yrog.apijeuxolympiques.service.QRCodeService;

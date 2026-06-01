@@ -1,7 +1,7 @@
 package com.yrog.apijeuxolympiques.service;
 
 import com.yrog.apijeuxolympiques.dto.ticket.TicketResponse;
-import com.yrog.apijeuxolympiques.pojo.CartItem;
+import com.yrog.apijeuxolympiques.entity.CartItem;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.yrog.apijeuxolympiques.mapper.impl;
 
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
 import com.yrog.apijeuxolympiques.mapper.EventMapper;
-import com.yrog.apijeuxolympiques.pojo.Event;
+import com.yrog.apijeuxolympiques.entity.Event;
 import org.springframework.stereotype.Component;
 
 @Component

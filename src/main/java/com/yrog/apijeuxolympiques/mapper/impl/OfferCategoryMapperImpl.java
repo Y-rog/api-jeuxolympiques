@@ -2,7 +2,7 @@ package com.yrog.apijeuxolympiques.mapper.impl;
 
 import com.yrog.apijeuxolympiques.dto.offerCategory.OfferCategoryDTO;
 import com.yrog.apijeuxolympiques.mapper.OfferCategoryMapper;
-import com.yrog.apijeuxolympiques.pojo.OfferCategory;
+import com.yrog.apijeuxolympiques.entity.OfferCategory;
 import org.springframework.stereotype.Component;
 
 @Component

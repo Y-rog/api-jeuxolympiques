@@ -1,4 +1,4 @@
-package com.yrog.apijeuxolympiques.pojo;
+package com.yrog.apijeuxolympiques.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

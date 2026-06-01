@@ -1,7 +1,7 @@
 package com.yrog.apijeuxolympiques.mapper;
 
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
-import com.yrog.apijeuxolympiques.pojo.Offer;
+import com.yrog.apijeuxolympiques.entity.Offer;
 
 public interface OfferMapper {
 

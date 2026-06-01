@@ -2,7 +2,7 @@ package com.yrog.apijeuxolympiques.service;
 
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
-import com.yrog.apijeuxolympiques.pojo.CartItem;
+import com.yrog.apijeuxolympiques.entity.CartItem;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
