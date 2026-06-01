@@ -111,6 +111,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
                         .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
                         .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/error").permitAll()
 
                         .anyRequest().authenticated());
 
