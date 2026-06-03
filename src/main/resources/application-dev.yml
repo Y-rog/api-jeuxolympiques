@@ -20,3 +20,5 @@ spring:
     init:
       mode: always
       encoding: UTF-8
+
+swaggerUrl: http://localhost:8081

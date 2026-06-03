@@ -2,12 +2,21 @@ package com.yrog.apijeuxolympiques.mapper;
 
 import com.yrog.apijeuxolympiques.dto.offerCategory.OfferCategoryDTO;
 import com.yrog.apijeuxolympiques.entity.OfferCategory;
+import org.mapstruct.Mapper;
 
+/**
+ * Mapper MapStruct pour convertir entre OfferCategory et OfferCategoryDTO.
+ */
+@Mapper(componentModel = "spring")
 public interface OfferCategoryMapper {
 
-    OfferCategoryDTO toDTO(OfferCategory offerCategory);  // Convertir une catégorie d'offre en DTO
+    /**
+     * Convertit un OfferCategory en OfferCategoryDTO.
+     */
+    OfferCategoryDTO toDTO(OfferCategory offerCategory);
 
-    OfferCategory toEntity(OfferCategoryDTO offerCategoryDTO);  // Convertir un DTO en une catégorie d'offre
+    /**
+     * Convertit un OfferCategoryDTO en OfferCategory.
+     */
+    OfferCategory toEntity(OfferCategoryDTO offerCategoryDTO);
 }
-
-

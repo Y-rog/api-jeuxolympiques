@@ -1,78 +1,65 @@
 package com.yrog.apijeuxolympiques.controller;
 
-import com.yrog.apijeuxolympiques.dto.cart.CartCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cart.CartResponse;
-import com.yrog.apijeuxolympiques.repository.CartRepository;
 import com.yrog.apijeuxolympiques.service.CartService;
-import com.yrog.apijeuxolympiques.service.QRCodeService;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller gérant les opérations sur les paniers.
+ */
 @RestController
 @RequestMapping("api-jeuxolympiques/cart")
+@RequiredArgsConstructor
 public class CartController {
 
+    private final CartService cartService;
 
-    @Autowired
-    private CartService cartService;
-
-    @Autowired
-    private QRCodeService qrCodeService;
-
-    @Autowired
-    private CartRepository cartRepository;
-
-    // Créer un panier
+    /**
+     * Crée un nouveau panier pour l'utilisateur connecté.
+     */
     @PostMapping
-    public ResponseEntity<CartResponse> createCart(@RequestBody CartCreateRequest request) {
-        CartResponse response = cartService.createCart(request);
-        return ResponseEntity.status(201).body(response);
+    public ResponseEntity<CartResponse> createCart() {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(cartService.createCart());
     }
 
-    // Trouver le panier de l'utilisateur
+    /**
+     * Récupère le panier actif de l'utilisateur connecté.
+     */
     @GetMapping
     public ResponseEntity<CartResponse> findCartByUser() {
-        CartResponse cartResponse = cartService.findCartByUser(); // On récupère un DTO
-        if (cartResponse == null) {
-            return ResponseEntity.notFound().build(); // Retourne un 404 si le panier n'est pas trouvé
-        }
-        return ResponseEntity.ok(cartResponse);
+        return ResponseEntity.ok(cartService.findCartByUser());
     }
 
-    // Récupérer un panier par son ID
+    /**
+     * Récupère un panier par son identifiant.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<CartResponse> getCartById(@PathVariable Long id) {
-        CartResponse cartResponse = cartService.getCartById(id); // On retourne un DTO ici aussi
-        if (cartResponse == null) {
-            return ResponseEntity.notFound().build(); // Retourne un 404 si panier introuvable
-        }
-        return ResponseEntity.ok(cartResponse);
+        return ResponseEntity.ok(cartService.getCartById(id));
     }
 
-    // Supprimer un panier par ID
+    /**
+     * Supprime un panier par son identifiant.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCart(@PathVariable Long id) {
-        try {
-            cartService.deleteCart(id); // Appelle la méthode qui supprime le panier
-            return ResponseEntity.noContent().build(); // 204 No Content, suppression réussie
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build(); // 404 Not Found si panier introuvable
-        }
+        cartService.deleteCart(id);
+        return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Confirme ou simule l'échec du paiement d'un panier.
+     */
     @PostMapping("/{id}/confirm-payment")
-    public ResponseEntity<String> confirmPayment(@PathVariable Long id, @RequestParam boolean simulateFailure) {
-        try {
-            cartService.confirmPaymentAndGenerateQRCode(id, simulateFailure);
-            return ResponseEntity.ok("Paiement " + (simulateFailure ? "échoué" : "validé") + " avec succès.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors du paiement : " + e.getMessage());
-        }
+    public ResponseEntity<String> confirmPayment(@PathVariable Long id,
+                                                 @RequestParam boolean simulateFailure) {
+        cartService.confirmPaymentAndGenerateQRCode(id, simulateFailure);
+        return ResponseEntity.ok("Paiement " + (simulateFailure ? "échoué" : "validé") + " avec succès.");
     }
-
 }
 
 

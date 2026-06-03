@@ -1,47 +1,45 @@
 package com.yrog.apijeuxolympiques.entity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 
 
 import java.time.LocalDateTime;
 
+/**
+ * Entité représentant un événement sportif des Jeux Olympiques.
+ */
 @Entity
 @Getter
 @Setter
+@Table (name = "events")
 public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id")
     private Long eventId;
 
-    @NotNull
+    @Column(nullable = false, length = 200)
     private String eventTitle;
 
-    @NotNull
+    @Column(nullable = false, length = 500)
     private String eventDescription;
 
-    @NotNull
+    @Column(nullable = false, length = 200)
     private String eventLocation;
 
-    @NotNull
+    /**
+     * Nombre de places disponibles pour cet événement.
+     */
+    @Column(nullable = false)
     private Integer eventPlacesNumber;
 
-    @NotNull
+    /**
+     * Date et heure de l'événement.
+     */
+    @Column(nullable = false)
     private LocalDateTime eventDateTime;
-
-    public Event() {
-
-    }
-
-    public Event(@NotNull String eventTitle, @NotNull String eventDescription, @NotNull String eventLocation,@NotNull Integer eventPlacesNumber, @NotNull LocalDateTime eventDateTime) {
-        this.eventTitle = eventTitle;
-        this.eventDescription = eventDescription;
-        this.eventLocation = eventLocation;
-        this.eventPlacesNumber = eventPlacesNumber;
-        this.eventDateTime = eventDateTime;
-    }
-
 
 }

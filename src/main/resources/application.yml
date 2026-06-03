@@ -11,10 +11,12 @@ spring:
     defer-datasource-initialization: true
 server:
   port: ${PORT:8081}
+  forward-headers-strategy: framework
 jo:
   jwtSecret: ${JWT_SECRET}
   jwtExpirationInMs: 86400000
 frontUrl: ${FRONT_URL}
+swaggerUrl: ${SWAGGER_URL}
 admin:
   firstname: ${ADMIN_FIRSTNAME}
   lastname: ${ADMIN_LASTNAME}
@@ -23,3 +25,7 @@ admin:
 cart:
   item:
     item_expiration_duration: ${ITEM_EXPIRATION_DURATION}
+springdoc:
+  swagger-ui:
+    url: /v3/api-docs
+  use-management-port: false

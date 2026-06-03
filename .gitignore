@@ -162,3 +162,7 @@ $RECYCLE.BIN/
 
 .env
 # End of https://www.toptal.com/developers/gitignore/api/java,windows,maven,intellij+all
+
+
+# .gitignore
+docs/

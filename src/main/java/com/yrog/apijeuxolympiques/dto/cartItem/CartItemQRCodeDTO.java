@@ -1,12 +1,13 @@
 package com.yrog.apijeuxolympiques.dto.cartItem;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class CartItemQRCodeDTO {
-    private Long cartItemId;
-    private String qrCode;
-}
+/**
+ * DTO représentant un article du panier avec son QR code.
+ *
+ * @param cartItemId l'identifiant de l'article
+ * @param qrCode     le QR code généré pour cet article
+ */
+public record CartItemQRCodeDTO(
+        Long cartItemId,
+        String qrCode
+) {}
 

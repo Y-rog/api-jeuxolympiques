@@ -3,51 +3,50 @@ package com.yrog.apijeuxolympiques.controller;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
 import com.yrog.apijeuxolympiques.service.CartItemService;
-import com.yrog.apijeuxolympiques.service.CartService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Controller gérant les articles du panier.
+ */
 @RestController
 @RequestMapping("api-jeuxolympiques/cart/{cartId}/items")
+@RequiredArgsConstructor
 public class CartItemController {
 
     private final CartItemService cartItemService;
 
-    public CartItemController(CartService cartService, CartItemService cartItemService) {
-        this.cartItemService = cartItemService;
-    }
-
-    // Récupérer les éléments du panier par cartId
+    /**
+     * Récupère tous les articles d'un panier.
+     */
     @GetMapping
     public ResponseEntity<List<CartItemResponse>> findCartItemsByCartId(@PathVariable Long cartId) {
-        List<CartItemResponse> items = cartItemService.findCartItemsByCartId(cartId);
-
-        // Si aucun élément n'est trouvé dans le panier, on renvoie un tableau vide avec un statut 200 OK
-        if (items.isEmpty()) {
-            return ResponseEntity.ok().body(List.of());  // Réponse avec un tableau vide
-        }
-
-        return ResponseEntity.ok(items);  // Retourne les éléments du panier si trouvés
+        return ResponseEntity.ok(cartItemService.findCartItemsByCartId(cartId));
     }
 
-    // Supprimer un élément du panier
-    @DeleteMapping("/{cartItemId}")
-    public ResponseEntity<Void> removeItemFromCart(@PathVariable Long cartId, @PathVariable Long cartItemId) {
-        cartItemService.removeItemFromCart(cartId, cartItemId);
-        return ResponseEntity.noContent().build();  // Renvoie un code HTTP 204 (No Content)
-    }
-
-    // Ajouter un élément dans le panier
+    /**
+     * Ajoute un article au panier via RabbitMQ.
+     */
     @PostMapping
-    public ResponseEntity<CartItemResponse> addItem(@PathVariable Long cartId, @RequestBody @Valid CartItemCreateRequest request) {
-
-        CartItemResponse response = cartItemService.addItemToCart(cartId, request);
-        return ResponseEntity.ok(response);  // Renvoie le CartItemResponse avec un code HTTP 200
+    public ResponseEntity<Void> addItem(@PathVariable Long cartId,
+                                        @RequestBody @Valid CartItemCreateRequest request) {
+        cartItemService.addItemToCart(cartId, request);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 
+    /**
+     * Supprime un article du panier.
+     */
+    @DeleteMapping("/{cartItemId}")
+    public ResponseEntity<Void> removeItemFromCart(@PathVariable Long cartId,
+                                                   @PathVariable Long cartItemId) {
+        cartItemService.removeItemFromCart(cartId, cartItemId);
+        return ResponseEntity.noContent().build();
+    }
 }
 

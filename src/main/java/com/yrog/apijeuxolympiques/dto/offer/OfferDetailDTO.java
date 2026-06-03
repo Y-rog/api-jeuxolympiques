@@ -1,55 +1,38 @@
 package com.yrog.apijeuxolympiques.dto.offer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@Schema(description = "Détails enrichis d'une offre incluant les infos de l'événement et de la catégorie")
-public class OfferDetailDTO {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long offerId;
-
-    @Schema(description = "Prix de l'offre", example = "49.99")
-    @NotNull(message = "Le prix ne peut pas être nul")
-    private BigDecimal price;
-
-    @Schema(description = "Disponibilité de l'offre", example = "true")
-    private boolean availability;
-
-    @Schema(description = "ID de l'événement lié", example = "1")
-    @NotNull
-    private Long eventId;
-
-    @Schema(description = "Titre de l'événement", example = "Finale de Basketball")
-    private String eventTitle;
-
-    @Schema(description = "Lieu de l'événement", example = "Stade de Lille")
-    private String eventLocation;
-
-    @Schema(description = "Date et heure de l'événement (format lisible)", example = "22/07/2024 20:00")
-    private LocalDateTime eventDateTime; // ici on utilise String formaté, sinon tu peux mettre LocalDateTime
-
-    @Schema(description = "ID de la catégorie d'offre", example = "2")
-    @NotNull
-    private Long offerCategoryId;
-
-    @Schema(description = "Titre de la catégorie d'offre", example = "Duo")
-    private String offerCategoryTitle;
-
-    @Schema(description = "Nombre de places par offre", example = "2")
-    private Integer offerCategoryPlacesPerOffer;
-
-    public OfferDetailDTO() {}
-}
-
+/**
+ * DTO représentant les détails complets d'une offre.
+ * Utilisé pour les vues utilisateur et administrateur.
+ *
+ * @param offerId                     l'identifiant de l'offre
+ * @param price                       le prix de l'offre
+ * @param availability                la disponibilité de l'offre
+ * @param active                      l'activation de l'offre
+ * @param eventId                     l'identifiant de l'événement lié
+ * @param eventTitle                  le titre de l'événement
+ * @param eventLocation               le lieu de l'événement
+ * @param eventDateTime               la date et heure de l'événement
+ * @param offerCategoryId             l'identifiant de la catégorie d'offre
+ * @param offerCategoryTitle          le titre de la catégorie
+ * @param offerCategoryPlacesPerOffer le nombre de places par offre
+ * @param salesCount                  le nombre de ventes (null si non disponible)
+ */
+@Schema(description = "Détails complets d'une offre")
+public record OfferDetailDTO(
+        Long offerId,
+        BigDecimal price,
+        boolean availability,
+        boolean active,
+        Long eventId,
+        String eventTitle,
+        String eventLocation,
+        LocalDateTime eventDateTime,
+        Long offerCategoryId,
+        String offerCategoryTitle,
+        Integer offerCategoryPlacesPerOffer,
+        Integer salesCount
+) {}

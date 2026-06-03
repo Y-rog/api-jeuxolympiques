@@ -1,10 +1,9 @@
 package com.yrog.apijeuxolympiques.configuration;
 
+import com.yrog.apijeuxolympiques.entity.ERole;
 import com.yrog.apijeuxolympiques.security.jwt.AuthEntryPointJwt;
 import com.yrog.apijeuxolympiques.security.jwt.AuthTokenFilter;
-import com.yrog.apijeuxolympiques.security.models.ERole;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,20 +24,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
-
+/**
+ * Configuration de la sécurité Spring Security.
+ * Gère l'authentification JWT, les CORS et les autorisations par rôle.
+ */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
 
     @Value("${frontUrl}")
     private String frontUrl;
 
-    @Autowired
-    UserDetailsService userDetailsService;
+    @Value("${swaggerUrl}")
+    private String swaggerUrl;
 
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    private final UserDetailsService userDetailsService;
+    private final AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
     public AuthTokenFilter authTokenFilter() {
@@ -51,17 +53,15 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-
         return authProvider;
     }
 
@@ -71,11 +71,10 @@ public class WebSecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(frontUrl)
+                        .allowedOrigins(frontUrl, swaggerUrl)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
-
             }
         };
     }
@@ -86,39 +85,32 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/auth/changePassword").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/auth/register").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/event/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api-jeuxolympiques/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api-jeuxolympiques/auth/changePassword").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api-jeuxolympiques/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api-jeuxolympiques/auth/me").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/event").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/offers/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/offers").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.PATCH,"/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET,"/api-jeuxolympiques/offer-categories/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE,"/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
-
-                        .anyRequest().authenticated());
-
+                        .requestMatchers(HttpMethod.GET, "/api-jeuxolympiques/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, "/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE, "/api-jeuxolympiques/event/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, "/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PATCH, "/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE, "/api-jeuxolympiques/offers/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.POST, "/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.PUT, "/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE, "/api-jeuxolympiques/offer-categories/**").hasAuthority(ERole.ADMIN.name())
+                        .anyRequest().authenticated()
+                );
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-
         http.cors(Customizer.withDefaults());
 
         return http.build();
     }
-
 }
 
 

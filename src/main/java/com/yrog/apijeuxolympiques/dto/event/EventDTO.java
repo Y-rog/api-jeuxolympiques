@@ -8,38 +8,42 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+/**
+ * DTO représentant les informations d'un événement olympique.
+ *
+ * @param eventTitle       le titre de l'événement
+ * @param eventDescription la description de l'événement
+ * @param eventLocation    le lieu de l'événement
+ * @param eventPlacesNumber le nombre de places disponibles
+ * @param eventDateTime    la date et heure de l'événement
+ */
 @Schema(description = "Informations sur l'événement'")
-public class EventDTO {
+public record EventDTO (
 
     @NotNull(message = "Le titre est obligatoire")
     @Schema(description = "Titre de l'événement", example = "Finale de basketball")
     @Size(min = 1, max = 50, message = "Le titre doit avoir entre 1 et 50 caractères")
-    private String eventTitle;
+    String eventTitle,
 
     @NotNull(message = "La description est obligatoire")
     @Schema(description = "Description de l'événement", example = "Venez voir la grande finale du tournoi")
     @Size(min = 1, max=500, message ="La description doit avoir entre 1 et 500 caractères")
-    private String eventDescription;
+    String eventDescription,
 
     @NotNull(message = "La location est obligatoire")
     @Schema(description = "Lieu de l'événement", example = "Stade de Lille")
     @Size(min = 1, max=50, message ="Le lieu doit avoir entre 1 et 50 caractères")
-    private String eventLocation;
+    String eventLocation,
 
     @NotNull(message = "Le nombre de places est obligatoire")
     @Schema(description = "Nombre de places", example = "1000")
-    @NotNull
     @Min(value = 1, message ="Le nombre doit être supérieur à 1")
     @Max(value = 999999, message = "Le nombre doit être inferieur à 999999")
-    private Integer eventPlacesNumber;
+    Integer eventPlacesNumber,
 
     @NotNull(message = "La date et l'heur sont obligatoire")
-    @Schema(description = "Titre de l'événement", example = "22/07/2024 20:00")
+    @Schema(description = "Date et heure de l'événement", example = "22/07/2024 20:00")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime eventDateTime;
+    LocalDateTime eventDateTime
 
-    public EventDTO() {}
-
-}
+) {}

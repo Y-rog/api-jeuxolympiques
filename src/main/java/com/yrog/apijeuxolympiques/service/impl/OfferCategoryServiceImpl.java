@@ -1,73 +1,66 @@
 package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.offerCategory.OfferCategoryDTO;
-import com.yrog.apijeuxolympiques.mapper.impl.OfferCategoryMapperImpl;
 import com.yrog.apijeuxolympiques.entity.OfferCategory;
+import com.yrog.apijeuxolympiques.mapper.OfferCategoryMapper;
 import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.service.OfferCategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * Implémentation du service gérant les catégories d'offres.
+ */
 @Service
+@RequiredArgsConstructor
 public class OfferCategoryServiceImpl implements OfferCategoryService {
 
-    @Autowired
-    private OfferCategoryRepository offerCategoryRepository;
-
-    @Autowired
-    private OfferCategoryMapperImpl offerCategoryMapper;
+    private final OfferCategoryRepository offerCategoryRepository;
+    private final OfferCategoryMapper offerCategoryMapper;
 
     @Override
-    public OfferCategoryDTO createCategory(OfferCategoryDTO offerCategoryDTO) {
-        // Vérification si une catégorie avec le même titre existe déjà
-        Optional<OfferCategory> existingCategory = offerCategoryRepository.findByTitleIgnoreCase(offerCategoryDTO.getTitle());
-        if (existingCategory.isPresent()) {
-            throw new IllegalArgumentException("Une catégorie avec ce titre existe déjà.");
-        }
+    public OfferCategoryDTO createCategory(OfferCategoryDTO dto) {
+        offerCategoryRepository.findByTitleIgnoreCase(dto.title())
+                .ifPresent(c -> { throw new IllegalArgumentException("Une catégorie avec ce titre existe déjà."); });
 
-        // Si non existante, création
-        OfferCategory offerCategory = offerCategoryMapper.toEntity(offerCategoryDTO);
-        OfferCategory savedOfferCategory = offerCategoryRepository.save(offerCategory);
-        return offerCategoryMapper.toDTO(savedOfferCategory);
+        return offerCategoryMapper.toDTO(
+                offerCategoryRepository.save(offerCategoryMapper.toEntity(dto))
+        );
     }
 
-
     @Override
-    public List<OfferCategory> getAllCategories() {
-        List<OfferCategory> offerCategories = offerCategoryRepository.findAll();
-        return offerCategories;
+    public List<OfferCategoryDTO> getAllCategories() {
+        return offerCategoryRepository.findAll()
+                .stream()
+                .map(offerCategoryMapper::toDTO)
+                .toList();
     }
 
     @Override
     public OfferCategoryDTO getCategoryById(Long id) {
-        OfferCategory offerCategory = offerCategoryRepository.findById(id).orElse(null);
-        return offerCategory != null ? offerCategoryMapper.toDTO(offerCategory) : null;
+        return offerCategoryRepository.findById(id)
+                .map(offerCategoryMapper::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Catégorie introuvable : " + id));
     }
 
     @Override
-    public OfferCategoryDTO updateCategory(Long id, OfferCategoryDTO offerCategoryDTO) {
-        Optional<OfferCategory> existingCategory = offerCategoryRepository.findById(id);
-        if (existingCategory.isPresent()) {
-            OfferCategory categoryToUpdate = existingCategory.get();
-            categoryToUpdate.setTitle(offerCategoryDTO.getTitle());
-            categoryToUpdate.setPlacesPerOffer(offerCategoryDTO.getPlacesPerOffer());
+    public OfferCategoryDTO updateCategory(Long id, OfferCategoryDTO dto) {
+        OfferCategory category = offerCategoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Catégorie introuvable : " + id));
 
-            OfferCategory updatedCategory = offerCategoryRepository.save(categoryToUpdate);
-            return offerCategoryMapper.toDTO(updatedCategory);
-        }
-        return null;
+        category.setTitle(dto.title());
+        category.setPlacesPerOffer(dto.placesPerOffer());
+        return offerCategoryMapper.toDTO(offerCategoryRepository.save(category));
     }
 
     @Override
-    public boolean deleteCategory(Long id) {
-        if (offerCategoryRepository.existsById(id)) {
-            offerCategoryRepository.deleteById(id);
-            return true;
+    public void deleteCategory(Long id) {
+        if (!offerCategoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("Catégorie introuvable : " + id);
         }
-        return false;
+        offerCategoryRepository.deleteById(id);
     }
 }
 

@@ -1,24 +1,21 @@
 package com.yrog.apijeuxolympiques.mapper;
 
-import com.yrog.apijeuxolympiques.dto.cartItem.CartItemCreateRequest;
 import com.yrog.apijeuxolympiques.dto.cartItem.CartItemResponse;
-import com.yrog.apijeuxolympiques.entity.Cart;
 import com.yrog.apijeuxolympiques.entity.CartItem;
-import com.yrog.apijeuxolympiques.entity.Offer;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
+/**
+ * Mapper MapStruct pour convertir entre CartItem et CartItemResponse.
+ */
+@Mapper(componentModel = "spring")
 public interface CartItemMapper {
 
-    CartItemCreateRequest toDTO(CartItem cartItem);
-
-    CartItem toEntity(CartItemCreateRequest dto);
-
+    @Mapping(source = "offer.offerId", target = "offerId")
+    @Mapping(source = "cart.cartId", target = "cartId")
     CartItemResponse toResponse(CartItem item);
 
     List<CartItemResponse> toResponseList(List<CartItem> items);
-
-    List<CartItem> toEntityList(List<CartItemCreateRequest> requests, Cart cart, List<Offer> offers);
-
 }
-
