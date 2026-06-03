@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Chargeur de données initiales au démarrage de l'application.
@@ -59,10 +60,10 @@ public class AdminLoader {
                         adminUsername,
                         passwordEncoder.encode(adminPassword)
                 );
+                adminUser.setSecretKey(UUID.randomUUID().toString());
 
                 Role adminRole = roleRepository.findByName(ERole.ADMIN)
                         .orElseThrow(() -> new RuntimeException("Rôle ADMIN introuvable."));
-
                 adminUser.setRoles(Set.of(adminRole));
                 userRepository.save(adminUser);
                 log.info("Compte administrateur créé avec succès.");
