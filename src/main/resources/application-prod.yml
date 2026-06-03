@@ -19,4 +19,6 @@ spring:
       ddl-auto: update
   sql:
     init:
-      mode: never
+      # always : exécute data.sql à chaque démarrage
+      # Passer à never si les données de démo ne sont plus nécessaires
+      mode: always
