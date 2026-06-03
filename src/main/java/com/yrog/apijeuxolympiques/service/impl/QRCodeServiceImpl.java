@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Implémentation du service de génération de QR codes.
+ */
 @Service
 public class QRCodeServiceImpl implements QRCodeService {
 
@@ -29,23 +31,25 @@ public class QRCodeServiceImpl implements QRCodeService {
     public List<CartItemQRCodeDTO> generateQRCodesForCart(Cart cart, int width, int height) {
         String transactionUuid = cart.getTransactionUuid();
         String userKey = cart.getUser().getSecretKey();
+
         if (transactionUuid == null || userKey == null) {
-            throw new IllegalStateException("Cart or user not ready for QR generation");
+            throw new IllegalStateException("Panier ou utilisateur non prêt pour la génération de QR codes.");
         }
-        return cart.getItems().stream().map(item -> {
-            String qrCodeKey = transactionUuid + "_" + userKey;
-            byte[] qrCodePng = null;
-            try {
-                qrCodePng = generateQRCode(qrCodeKey, width, height);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            String b64  = Base64.getEncoder().encodeToString(qrCodePng);
-            CartItemQRCodeDTO dto = new CartItemQRCodeDTO();
-            dto.setCartItemId(item.getCartItemId());
-            dto.setQrCode(b64);
-            return dto;
-        }).collect(Collectors.toList());
+
+        String qrCodeKey = transactionUuid + "_" + userKey;
+
+        return cart.getItems().stream()
+                .map(item -> {
+                    try {
+                        String b64 = Base64.getEncoder().encodeToString(
+                                generateQRCode(qrCodeKey, width, height)
+                        );
+                        return new CartItemQRCodeDTO(item.getCartItemId(), b64);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Erreur lors de la génération du QR code", e);
+                    }
+                })
+                .toList();
     }
 }
 

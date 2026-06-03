@@ -1,22 +1,20 @@
 package com.yrog.apijeuxolympiques.service.impl;
 
-import com.yrog.apijeuxolympiques.dto.cartItem.SalesByOfferDTO;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
-import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
-import com.yrog.apijeuxolympiques.dto.offer.OfferSalesStatsDTO;
-import com.yrog.apijeuxolympiques.mapper.impl.OfferMapperImpl;
+import com.yrog.apijeuxolympiques.dto.stats.SalesByOfferDTO;
 import com.yrog.apijeuxolympiques.entity.Event;
 import com.yrog.apijeuxolympiques.entity.Offer;
 import com.yrog.apijeuxolympiques.entity.OfferCategory;
+import com.yrog.apijeuxolympiques.mapper.OfferMapper;
 import com.yrog.apijeuxolympiques.repository.CartItemRepository;
-import com.yrog.apijeuxolympiques.repository.OfferRepository;
-import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
+import com.yrog.apijeuxolympiques.repository.OfferCategoryRepository;
+import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.service.EventService;
 import com.yrog.apijeuxolympiques.service.OfferService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,194 +25,136 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+/**
+ * Implémentation du service gérant les offres de billetterie.
+ */
 @Service
+@RequiredArgsConstructor
 public class OfferServiceImpl implements OfferService {
 
-    @Autowired
-    private OfferRepository offerRepository;
+    private final OfferRepository offerRepository;
+    private final OfferCategoryRepository offerCategoryRepository;
+    private final EventRepository eventRepository;
+    private final CartItemRepository cartItemRepository;
+    private final OfferMapper offerMapper;
+    private final EventService eventService;
 
-    @Autowired
-    private OfferCategoryRepository offerCategoryRepository;
-
-    @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private CartItemRepository cartItemRepository;
-
-    @Autowired
-    private OfferMapperImpl offerMapper;
-
-    @Autowired
-    private EventService eventService;
-
+    /**
+     * Convertit une entité Offer en OfferDetailDTO.
+     */
+    private OfferDetailDTO toOfferDetailDTO(Offer offer, Integer salesCount) {
+        return new OfferDetailDTO(
+                offer.getOfferId(),
+                offer.getPrice(),
+                offer.isAvailability(),
+                offer.isActive(),
+                offer.getEvent().getEventId(),
+                offer.getEvent().getEventTitle(),
+                offer.getEvent().getEventLocation(),
+                offer.getEvent().getEventDateTime(),
+                offer.getOfferCategory().getCategoryId(),
+                offer.getOfferCategory().getTitle(),
+                offer.getOfferCategory().getPlacesPerOffer(),
+                salesCount
+        );
+    }
 
     @Override
     public OfferDTO createOffer(OfferDTO offerDTO) {
         Offer offer = offerMapper.toEntity(offerDTO);
 
-        // Lier l'ID de la catégorie
-        if (offerDTO.getOfferCategoryId() != null) {
-            OfferCategory category = offerCategoryRepository.findById(offerDTO.getOfferCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
-            offer.setOfferCategory(category);
-        }
+        OfferCategory category = offerCategoryRepository.findById(offerDTO.offerCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Catégorie introuvable : " + offerDTO.offerCategoryId()));
+        offer.setOfferCategory(category);
 
-        // Lier l'ID de l'événement
-        if (offerDTO.getEventId() != null) {
-            Event event = eventRepository.findById(offerDTO.getEventId())
-                    .orElseThrow(() -> new RuntimeException("Event not found"));
-            offer.setEvent(event);
-        }
+        Event event = eventRepository.findById(offerDTO.eventId())
+                .orElseThrow(() -> new EntityNotFoundException("Événement introuvable : " + offerDTO.eventId()));
+        offer.setEvent(event);
 
-        Offer savedOffer = offerRepository.save(offer);
-        return offerMapper.toDTO(savedOffer);
+        return offerMapper.toDTO(offerRepository.save(offer));
     }
 
     @Override
-    public List<Offer> getAllOffers() {
-        List<Offer> offers = offerRepository.findAll();
-        return offers.stream().toList();
+    public List<OfferDTO> getAllOffers() {
+        return offerRepository.findAll()
+                .stream()
+                .map(offerMapper::toDTO)
+                .toList();
     }
 
     @Override
     public OfferDTO getOfferById(Long id) {
-        Offer offer = offerRepository.findById(id).orElse(null);
-        return offer != null ? offerMapper.toDTO(offer) : null;
+        return offerMapper.toDTO(
+                offerRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Offre introuvable : " + id))
+        );
     }
 
     @Override
     @Transactional
     public OfferDTO updateOffer(Long id, OfferDTO offerDTO) {
         Offer offerToUpdate = offerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Offre non trouvée"));
+                .orElseThrow(() -> new EntityNotFoundException("Offre introuvable : " + id));
 
-        // Si l'offre est active, on interdit la modification
         if (offerToUpdate.isActive()) {
             throw new IllegalStateException("Impossible de modifier une offre publiée.");
         }
 
-        // Vérifie si des tickets ont déjà été vendus pour cette offre
         boolean hasSoldTickets = cartItemRepository.existsByOfferAndCart_TransactionUuidIsNotNull(offerToUpdate);
 
         if (hasSoldTickets) {
-            // Autorise uniquement le changement de prix
-            offerToUpdate.setPrice(offerDTO.getPrice());
+            offerToUpdate.setPrice(offerDTO.price());
         } else {
-            // Offre modifiable entièrement
-            offerToUpdate.setPrice(offerDTO.getPrice());
-            offerToUpdate.setAvailability(offerDTO.isAvailability());
+            offerToUpdate.setPrice(offerDTO.price());
+            offerToUpdate.setAvailability(offerDTO.availability());
 
-            if (offerDTO.getOfferCategoryId() != null) {
-                OfferCategory category = offerCategoryRepository.findById(offerDTO.getOfferCategoryId())
-                        .orElseThrow(() -> new RuntimeException("Catégorie non trouvée"));
-                offerToUpdate.setOfferCategory(category);
-            }
+            OfferCategory category = offerCategoryRepository.findById(offerDTO.offerCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException("Catégorie introuvable : " + offerDTO.offerCategoryId()));
+            offerToUpdate.setOfferCategory(category);
 
-            if (offerDTO.getEventId() != null) {
-                Event event = eventRepository.findById(offerDTO.getEventId())
-                        .orElseThrow(() -> new RuntimeException("Événement non trouvé"));
-                offerToUpdate.setEvent(event);
-            }
+            Event event = eventRepository.findById(offerDTO.eventId())
+                    .orElseThrow(() -> new EntityNotFoundException("Événement introuvable : " + offerDTO.eventId()));
+            offerToUpdate.setEvent(event);
         }
 
-        Offer updatedOffer = offerRepository.save(offerToUpdate);
-        return offerMapper.toDTO(updatedOffer);
+        return offerMapper.toDTO(offerRepository.save(offerToUpdate));
     }
 
-
     @Override
-    public boolean deleteOffer(Long id) {
+    public void deleteOffer(Long id) {
         Offer offerToDelete = offerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Offre non trouvée"));
+                .orElseThrow(() -> new EntityNotFoundException("Offre introuvable : " + id));
 
-        // Si l'offre est active, on interdit la suppression
         if (offerToDelete.isActive()) {
             throw new IllegalStateException("Impossible de supprimer une offre publiée.");
         }
 
-        // Vérifie si des tickets ont déjà été vendus pour cette offre
-        boolean hasSoldTickets = cartItemRepository.existsByOfferAndCart_TransactionUuidIsNotNull(offerToDelete);
-
-        if (hasSoldTickets) {
+        if (cartItemRepository.existsByOfferAndCart_TransactionUuidIsNotNull(offerToDelete)) {
             throw new IllegalStateException("Impossible de supprimer une offre dont des places ont été vendues.");
         }
 
         offerRepository.delete(offerToDelete);
-        return true;
-    }
-
-
-    @Override
-    public List<OfferDetailDTO> getAllOffersDetail() {
-        List<Offer> offers = offerRepository.findAll();
-
-        return offers.stream()
-                .filter(Offer::isActive)
-                .map(offer -> {
-                    OfferDetailDTO dto = new OfferDetailDTO();
-                    dto.setOfferId(offer.getOfferId());
-                    dto.setPrice(offer.getPrice());
-                    dto.setAvailability(offer.isAvailability());
-                    dto.setEventId(offer.getEvent().getEventId());
-                    dto.setEventTitle(offer.getEvent().getEventTitle());
-                    dto.setEventLocation(offer.getEvent().getEventLocation());
-                    dto.setEventDateTime(offer.getEvent().getEventDateTime());
-                    dto.setOfferCategoryId(offer.getOfferCategory().getCategoryId());
-                    dto.setOfferCategoryTitle(offer.getOfferCategory().getTitle());
-                    dto.setOfferCategoryPlacesPerOffer(offer.getOfferCategory().getPlacesPerOffer());
-                    return dto;
-                })
-                .collect(Collectors.toList());
     }
 
     @Override
-    public List<OfferDetailAdminRequest> getAllOffersDetailForAdmin() {
-        List<Offer> offers = offerRepository.findAll();
-
-        return offers.stream()
-                .map(offer -> {
-                    OfferDetailAdminRequest request = new OfferDetailAdminRequest();
-                    request.setOfferId(offer.getOfferId());
-                    request.setPrice(offer.getPrice());
-                    request.setAvailability(offer.isAvailability());
-                    request.setActive(offer.isActive());
-                    request.setEventId(offer.getEvent().getEventId());
-                    request.setEventTitle(offer.getEvent().getEventTitle());
-                    request.setEventLocation(offer.getEvent().getEventLocation());
-                    request.setEventDateTime(offer.getEvent().getEventDateTime());
-                    request.setOfferCategoryId(offer.getOfferCategory().getCategoryId());
-                    request.setOfferCategoryTitle(offer.getOfferCategory().getTitle());
-                    request.setOfferCategoryPlacesPerOffer(offer.getOfferCategory().getPlacesPerOffer());
-                    return request;
-                })
-                .collect(Collectors.toList());
+    public List<OfferDetailDTO> getAllOffersDetail(boolean adminView) {
+        return offerRepository.findAll()
+                .stream()
+                .filter(offer -> adminView || offer.isActive())
+                .map(offer -> toOfferDetailDTO(offer, null))
+                .toList();
     }
 
     @Override
     @Transactional
     public boolean checkAvailabilityForOffer(Long offerId, int requestedQuantity) {
-        // Récupère l'offre par son ID
         Offer offer = offerRepository.findById(offerId)
-                .orElseThrow(() -> new RuntimeException("Offer not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Offre introuvable : " + offerId));
 
-        // Récupère l'événement associé à l'offre
-        Event event = offer.getEvent();
-
-        // Récupère la catégorie de l'offre
-        OfferCategory offerCategory = offer.getOfferCategory();
-        int placesPerOffer = offerCategory.getPlacesPerOffer();
-
-        // Calcule le nombre total de places nécessaires pour la quantité demandée
-        int placesRequired = requestedQuantity * placesPerOffer;
-
-        // Calcule le nombre de places encore disponibles pour l'événement
-        int availablePlaces = eventService.getAvailablePlacesForEvent(event.getEventId());
-
-        // Détermine si l'offre est disponible (suffisamment de places)
+        int placesRequired = requestedQuantity * offer.getOfferCategory().getPlacesPerOffer();
+        int availablePlaces = eventService.getAvailablePlacesForEvent(offer.getEvent().getEventId());
         boolean isAvailable = availablePlaces >= placesRequired;
 
-        // Met à jour la disponibilité de l'offre et la sauvegarde si nécessaire
         if (offer.isAvailability() != isAvailable) {
             offer.setAvailability(isAvailable);
             offerRepository.save(offer);
@@ -227,73 +167,44 @@ public class OfferServiceImpl implements OfferService {
     @Transactional
     public void updateOffersAvailabilityByEvent(Long eventId) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND,"Événement non trouvé avec l'ID : " + eventId));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Événement introuvable : " + eventId));
 
         int availablePlaces = eventService.getAvailablePlacesForEvent(eventId);
         int eventCapacity = event.getEventPlacesNumber();
 
-        List<Offer> offers = offerRepository.getAllOffersByEventEventId(event.getEventId());
+        offerRepository.getAllOffersByEventEventId(event.getEventId())
+                .forEach(offer -> {
+                    int placesPerOffer = offer.getOfferCategory().getPlacesPerOffer();
+                    boolean isAvailable = placesPerOffer <= eventCapacity && availablePlaces >= placesPerOffer;
 
-        for (Offer offer : offers) {
-            int placesPerOffer = offer.getOfferCategory().getPlacesPerOffer();
-
-            boolean isAvailable;
-
-            // Cas où l'offre demande plus que la capacité totale de l'événement → jamais disponible
-            if (placesPerOffer > eventCapacity) {
-                isAvailable = false;
-            } else {
-                // Sinon : disponible si suffisamment de places restantes
-                isAvailable = availablePlaces >= placesPerOffer;
-            }
-
-            if (offer.isAvailability() != isAvailable) {
-                offer.setAvailability(isAvailable);
-                offerRepository.save(offer);
-            }
-        }
+                    if (offer.isAvailability() != isAvailable) {
+                        offer.setAvailability(isAvailable);
+                        offerRepository.save(offer);
+                    }
+                });
     }
 
     @Override
-    public boolean toggleOfferActive(Long offerId) {
+    public void toggleOfferActive(Long offerId) {
         Offer offer = offerRepository.findById(offerId)
-                .orElseThrow(() -> new EntityNotFoundException("Offre non trouvée"));
+                .orElseThrow(() -> new EntityNotFoundException("Offre introuvable : " + offerId));
         offer.setActive(!offer.isActive());
         offerRepository.save(offer);
-        return offer.isActive(); // Retourne le nouvel état
     }
 
     @Override
-    public List<OfferSalesStatsDTO> findOfferStats() {
-        List<Offer> offers = offerRepository.findAll();
+    public List<OfferDetailDTO> findOfferStats() {
         List<SalesByOfferDTO> salesStats = cartItemRepository.countSalesByOffer();
 
         Map<Long, Long> salesCountByOfferId = salesStats.stream()
                 .collect(Collectors.toMap(SalesByOfferDTO::getOfferId, SalesByOfferDTO::getSalesCount));
 
-        return offers.stream()
-                .map(offer -> {
-                    OfferSalesStatsDTO dto = new OfferSalesStatsDTO();
-                    dto.setOfferId(offer.getOfferId());
-                    dto.setPrice(offer.getPrice());
-                    dto.setAvailability(offer.isAvailability());
-                    dto.setActive(offer.isActive());
-                    dto.setEventId(offer.getEvent().getEventId());
-                    dto.setEventTitle(offer.getEvent().getEventTitle());
-                    dto.setEventLocation(offer.getEvent().getEventLocation());
-                    dto.setEventDateTime(offer.getEvent().getEventDateTime());
-                    dto.setOfferCategoryId(offer.getOfferCategory().getCategoryId());
-                    dto.setOfferCategoryTitle(offer.getOfferCategory().getTitle());
-                    dto.setOfferCategoryPlacesPerOffer(offer.getOfferCategory().getPlacesPerOffer());
-
-                    dto.setSalesCount(Math.toIntExact(salesCountByOfferId.getOrDefault(offer.getOfferId(), 0L)));
-
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        return offerRepository.findAll()
+                .stream()
+                .map(offer -> toOfferDetailDTO(
+                        offer,
+                        Math.toIntExact(salesCountByOfferId.getOrDefault(offer.getOfferId(), 0L))
+                ))
+                .toList();
     }
-
-
 }
-
-

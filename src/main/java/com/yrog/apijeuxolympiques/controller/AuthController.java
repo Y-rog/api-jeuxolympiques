@@ -1,19 +1,20 @@
 package com.yrog.apijeuxolympiques.controller;
 
-import com.yrog.apijeuxolympiques.security.jwt.JwtUtils;
+import com.yrog.apijeuxolympiques.dto.auth.JwtResponse;
+import com.yrog.apijeuxolympiques.dto.auth.LoginRequest;
+import com.yrog.apijeuxolympiques.dto.auth.MessageResponse;
+import com.yrog.apijeuxolympiques.dto.auth.SignupRequest;
 import com.yrog.apijeuxolympiques.entity.ERole;
 import com.yrog.apijeuxolympiques.entity.Role;
 import com.yrog.apijeuxolympiques.entity.User;
 import com.yrog.apijeuxolympiques.repository.RoleRepository;
 import com.yrog.apijeuxolympiques.repository.UserRepository;
-import com.yrog.apijeuxolympiques.dto.auth.LoginRequest;
-import com.yrog.apijeuxolympiques.dto.auth.SignupRequest;
-import com.yrog.apijeuxolympiques.dto.auth.JwtResponse;
-import com.yrog.apijeuxolympiques.dto.auth.MessageResponse;
+import com.yrog.apijeuxolympiques.security.jwt.JwtUtils;
 import com.yrog.apijeuxolympiques.security.service.AuthService;
 import com.yrog.apijeuxolympiques.security.service.UserDetailsImpl;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,35 +28,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+/**
+ * Controller gérant l'authentification et l'inscription des utilisateurs.
+ */
 @RestController
 @RequestMapping("api-jeuxolympiques/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
+    private final AuthService authService;
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
-
-    @Autowired
-    AuthService authService;
-
+    /**
+     * Authentifie un utilisateur et retourne un token JWT.
+     */
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
@@ -64,47 +59,46 @@ public class AuthController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.ok(new JwtResponse(jwt, username, roles));
-
     }
 
-    @PutMapping("changePassword")
-    public void changePassword (@Valid @RequestBody SignupRequest signupRequest) {
-        this.authService.changePassword(signupRequest);
+    /**
+     * Change le mot de passe d'un utilisateur.
+     */
+    @PutMapping("/changePassword")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody SignupRequest signupRequest) {
+        authService.changePassword(signupRequest);
+        return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Inscrit un nouvel utilisateur.
+     */
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
-        // Vérifie si l'email existe déjà
-        if (userRepository.existsByUsername(signupRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
+        if (userRepository.existsByUsername(signupRequest.username())) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Cet email est déjà utilisé."));
         }
 
-        // Crée un nouvel utilisateur avec le nom, prénom, email, et mot de passe encodé
-        User user = new User(signupRequest.getFirstname(), signupRequest.getLastname(), signupRequest.getUsername(), passwordEncoder.encode(signupRequest.getPassword()));
+        User user = new User(
+                signupRequest.firstname(),
+                signupRequest.lastname(),
+                signupRequest.username(),
+                passwordEncoder.encode(signupRequest.password())
+        );
 
-        // Génère une clé secrète unique pour l'utilisateur
         user.setSecretKey(UUID.randomUUID().toString());
 
-        // Définit le rôle par défaut en tant que "USER"
-        Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName(ERole.USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role 'USER' is not found."));
-        roles.add(userRole);
+                .orElseThrow(() -> new RuntimeException("Rôle USER introuvable."));
 
-        // Assigne les rôles à l'utilisateur
-        user.setRoles(roles);
-
-        // Sauvegarde l'utilisateur dans la base de données
+        user.setRoles(Set.of(userRole));
         userRepository.save(user);
 
-        // Retourne une réponse de succès
-        return ResponseEntity.ok(new MessageResponse("User registered successfully"));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new MessageResponse("Utilisateur créé avec succès."));
     }
-
-
 }

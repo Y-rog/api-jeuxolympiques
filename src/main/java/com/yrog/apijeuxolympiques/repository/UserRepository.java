@@ -8,21 +8,29 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository gérant les opérations sur les utilisateurs.
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // Recherche d'un utilisateur par son username
+    /**
+     * Recherche un utilisateur par son email.
+     */
     Optional<User> findByUsername(String username);
 
-    // Recherche des utilisateurs par leur rôle
+    /**
+     * Vérifie si un utilisateur avec cet email existe déjà.
+     */
+    boolean existsByUsername(String username);
+
+    /**
+     * Recherche les utilisateurs par leur rôle.
+     */
     @Query(value = "SELECT u.* FROM users u " +
             "JOIN user_roles ur ON ur.user_id = u.id " +
             "JOIN roles r ON r.id = ur.role_id " +
             "WHERE r.name = ?1",
             nativeQuery = true)
     List<User> findByRoles(String role);
-
-    // Vérifie si un utilisateur avec ce username existe déjà
-    boolean existsByUsername(String username);
-
 }

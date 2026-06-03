@@ -1,104 +1,74 @@
 package com.yrog.apijeuxolympiques.messaging.consumer;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import com.yrog.apijeuxolympiques.entity.Cart;
 import com.yrog.apijeuxolympiques.entity.CartItem;
 import com.yrog.apijeuxolympiques.entity.Offer;
 import com.yrog.apijeuxolympiques.repository.CartRepository;
 import com.yrog.apijeuxolympiques.repository.OfferRepository;
 import com.yrog.apijeuxolympiques.service.OfferService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
-import java.util.Optional;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.Duration;
+import java.time.Instant;
 
+/**
+ * Consumer RabbitMQ gérant l'ajout d'articles au panier de façon asynchrone.
+ */
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class CartItemConsumer {
 
-    @Autowired
-    private CartRepository cartRepository;
-
-    @Autowired
-    private OfferRepository offerRepository;
-
-    @Autowired
-    private OfferService offerService;
+    private final CartRepository cartRepository;
+    private final OfferRepository offerRepository;
+    private final OfferService offerService;
 
     @Value("${cart.item.item_expiration_duration}")
     private Long itemExpirationDuration;
 
-
-
+    /**
+     * Traite un message RabbitMQ pour ajouter un article au panier.
+     *
+     * @param message le message contenant cartId et offerId
+     */
     @RabbitListener(queues = "cartItemQueue")
     @Transactional
-    public void handleAddItemToCart(Map<String, Object> message) {
-        try {
-            Number cartIdNumber = (Number) message.get("cartId");
-            if (cartIdNumber == null) {
-                System.out.println("Erreur : cartId est manquant dans le message.");
-                return;
-            }
-            Long cartId = cartIdNumber.longValue();
+    public void handleAddItemToCart(AddItemToCartMessage message) {
+        log.info("Message reçu pour ajout panier : cartId={}, offerId={}",
+                message.cartId(), message.offerId());
 
-            Number offerIdNumber = (Number) message.get("offerId");
-            if (offerIdNumber == null) {
-                System.out.println("Erreur : offerId est manquant dans le message.");
-                return;
-            }
-            Long offerId = offerIdNumber.longValue();
+        Cart cart = cartRepository.findById(message.cartId())
+                .orElseThrow(() -> new EntityNotFoundException("Panier introuvable : " + message.cartId()));
 
-            Object priceObj = message.get("priceAtPurchase");
-            if (priceObj == null) {
-                System.out.println("Erreur : priceAtPurchase est manquant dans le message.");
-                return;
-            }
-            BigDecimal priceAtPurchase = new BigDecimal(priceObj.toString());
+        Offer offer = offerRepository.findById(message.offerId())
+                .orElseThrow(() -> new EntityNotFoundException("Offre introuvable : " + message.offerId()));
 
-            Optional<Cart> cartOptional = cartRepository.findById(cartId);
-            if (cartOptional.isEmpty()) {
-                System.out.println("Erreur : Panier non trouvé pour l'ID : " + cartId);
-                return;
-            }
-            Cart cart = cartOptional.get();
-
-            Offer offer = offerRepository.findById(offerId)
-                    .orElseThrow(() -> new RuntimeException("Offer not found for offerId: " + offerId));
-
-            if (!offerService.checkAvailabilityForOffer(offer.getOfferId(), 1)) {
-                System.out.println("Erreur : Pas assez de places disponibles pour l'offre " + offerId);
-                return;
-            }
-
-            CartItem item = new CartItem();
-            item.setCart(cart);
-            item.setOffer(offer);
-            item.setPriceAtPurchase(priceAtPurchase);
-            item.setQrCode("");
-            item.setExpirationTime(Instant.now().plus(Duration.ofMinutes(itemExpirationDuration)));
-
-            cart.getItems().add(item);
-            cart.setUpdatedAt(java.time.LocalDateTime.now());
-
-            cart.setAmount(cart.getItems().stream()
-                    .map(CartItem::getPriceAtPurchase)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add));
-
-            cartRepository.save(cart);
-
-            System.out.println("✅ Article ajouté au panier avec succès.");
-
-        } catch (Exception e) {
-            System.out.println("Erreur lors de l'ajout au panier : " + e.getMessage());
+        if (!offerService.checkAvailabilityForOffer(offer.getOfferId(), 1)) {
+            throw new IllegalStateException("Pas assez de places disponibles pour l'offre : " + message.offerId());
         }
+
+        CartItem item = new CartItem();
+        item.setCart(cart);
+        item.setOffer(offer);
+        item.setPriceAtPurchase(offer.getPrice());
+        item.setQrCode("");
+        item.setExpirationTime(Instant.now().plus(Duration.ofMinutes(itemExpirationDuration)));
+
+        cart.getItems().add(item);
+        cart.setAmount(cart.getItems().stream()
+                .map(CartItem::getPriceAtPurchase)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+
+        cartRepository.save(cart);
+        log.info("Article ajouté avec succès au panier {}", message.cartId());
     }
-
-
 }
 
 

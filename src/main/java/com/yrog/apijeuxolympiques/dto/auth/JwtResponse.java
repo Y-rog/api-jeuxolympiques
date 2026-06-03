@@ -1,19 +1,17 @@
 package com.yrog.apijeuxolympiques.dto.auth;
 
-import lombok.Data;
-
 import java.util.List;
 
-@Data
-public class JwtResponse {
+/**
+ * DTO représentant la réponse JWT après authentification.
+ *
+ * @param token    le token JWT généré
+ * @param username l'email de l'utilisateur connecté
+ * @param roles    la liste des rôles de l'utilisateur
+ */
+public record JwtResponse(
+        String token,
+        String username,
+        List<String> roles
+) {}
 
-    private String token;
-    private String username;
-    private List<String> roles;
-
-    public JwtResponse(String token, String username, List<String> roles) {
-        this.token = token;
-        this.username = username;
-        this.roles = roles;
-    }
-}

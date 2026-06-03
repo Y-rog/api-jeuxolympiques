@@ -1,55 +1,68 @@
 package com.yrog.apijeuxolympiques.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
+/**
+ * Entité représentant un utilisateur de l'application.
+ */
 @Entity
-@Table( name = "users", uniqueConstraints = {
+@Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "username")
 })
 @Getter
 @Setter
 public class User {
 
+    /**
+     * Identifiant unique de l'utilisateur, généré automatiquement.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
-    @NotBlank
-    @Size(max=50)
+    /**
+     * Prénom de l'utilisateur.
+     */
+    @Column(nullable = false, length = 50)
     private String firstname;
 
-    @NotBlank
-    @Size(max=50)
+    /**
+     * Nom de l'utilisateur.
+     */
+    @Column(nullable = false, length = 50)
     private String lastname;
 
-    @NotBlank
-    @Size(max=50)
-    @Email
+    /**
+     * Email de l'utilisateur — utilisé comme identifiant de connexion.
+     */
+    @Column(nullable = false, length = 50, unique = true)
     private String username;
 
-    @NotBlank
-    @Size(max=120)
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?=\\S+$).{8,}$", message = "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un caractère spécial")
+    /**
+     * Mot de passe hashé avec BCrypt.
+     */
+    @Column(nullable = false, length = 120)
     private String password;
 
-    // Clé générée pour l'utilisateur, uniquement visible par l'organisation
+    /**
+     * Clé secrète unique générée à la création, utilisée pour sécuriser les QR codes.
+     */
     @Column(name = "secret_key", unique = true, nullable = false)
     private String secretKey;
 
-    @ManyToMany(fetch = FetchType.EAGER )
-    @JoinTable(name="user_roles",
-    joinColumns = @JoinColumn(name="user_id"),
-    inverseJoinColumns = @JoinColumn(name="role_id"))
+    /**
+     * Rôles assignés à l'utilisateur.
+     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
     public User(String firstname, String lastname, String username, String password) {
@@ -57,13 +70,7 @@ public class User {
         this.lastname = lastname;
         this.username = username;
         this.password = password;
-        this.secretKey = UUID.randomUUID().toString();
-
-        Role userRole = new Role(ERole.USER);
-        this.roles.add(userRole);
     }
 
-    public User() {
-
-    }
+    public User() {}
 }

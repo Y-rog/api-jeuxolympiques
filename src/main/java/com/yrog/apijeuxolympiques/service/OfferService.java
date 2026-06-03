@@ -1,39 +1,64 @@
 package com.yrog.apijeuxolympiques.service;
 
 import com.yrog.apijeuxolympiques.dto.offer.OfferDTO;
-import com.yrog.apijeuxolympiques.dto.offer.OfferDetailAdminRequest;
 import com.yrog.apijeuxolympiques.dto.offer.OfferDetailDTO;
-import com.yrog.apijeuxolympiques.dto.offer.OfferSalesStatsDTO;
-import com.yrog.apijeuxolympiques.entity.Offer;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
+/**
+ * Service gérant les opérations sur les offres de billetterie.
+ */
 public interface OfferService {
 
+    /**
+     * Crée une nouvelle offre.
+     */
     OfferDTO createOffer(OfferDTO offerDTO);
 
-    List<Offer> getAllOffers();
+    /**
+     * Retourne toutes les offres.
+     */
+    List<OfferDTO> getAllOffers();
 
+    /**
+     * Retourne une offre par son identifiant.
+     */
     OfferDTO getOfferById(Long id);
 
+    /**
+     * Met à jour une offre existante.
+     */
     OfferDTO updateOffer(Long id, OfferDTO offerDTO);
 
-    boolean deleteOffer(Long id);
+    /**
+     * Supprime une offre par son identifiant.
+     */
+    void deleteOffer(Long id);
 
-    List<OfferDetailDTO> getAllOffersDetail();
+    /**
+     * Retourne les détails de toutes les offres.
+     * @param adminView si true retourne toutes les offres, sinon seulement les actives
+     */
+    List<OfferDetailDTO> getAllOffersDetail(boolean adminView);
 
-    @Transactional
+    /**
+     * Met à jour la disponibilité des offres d'un événement.
+     */
     void updateOffersAvailabilityByEvent(Long eventId);
 
-    List<OfferDetailAdminRequest> getAllOffersDetailForAdmin();
-
-    @Transactional
+    /**
+     * Vérifie la disponibilité d'une offre pour une quantité donnée.
+     */
     boolean checkAvailabilityForOffer(Long offerId, int requestedQuantity);
 
-    boolean toggleOfferActive(Long offerId);
+    /**
+     * Active ou désactive une offre.
+     */
+    void toggleOfferActive(Long offerId);
 
-    List<OfferSalesStatsDTO> findOfferStats();
+    /**
+     * Retourne les statistiques de ventes par offre.
+     */
+    List<OfferDetailDTO> findOfferStats();
 }
 
 

@@ -1,98 +1,85 @@
 package com.yrog.apijeuxolympiques.service.impl;
 
 import com.yrog.apijeuxolympiques.dto.event.EventDTO;
-import com.yrog.apijeuxolympiques.mapper.EventMapper;
+import com.yrog.apijeuxolympiques.entity.Cart;
 import com.yrog.apijeuxolympiques.entity.CartItem;
 import com.yrog.apijeuxolympiques.entity.Event;
+import com.yrog.apijeuxolympiques.mapper.EventMapper;
 import com.yrog.apijeuxolympiques.repository.CartRepository;
 import com.yrog.apijeuxolympiques.repository.EventRepository;
 import com.yrog.apijeuxolympiques.service.EventService;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.yrog.apijeuxolympiques.entity.Cart;
-
 
 import java.util.List;
-import java.util.Optional;
 
-
+/**
+ * Implémentation du service gérant les événements olympiques.
+ */
 @Service
+@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
-    @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private EventMapper eventMapper;
-
-    @Autowired
-    private CartRepository cartRepository;
-
+    private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
+    private final CartRepository cartRepository;
 
     @Override
     public EventDTO createEvent(EventDTO eventDTO) {
-        Event event = eventMapper.toEntity(eventDTO);
-        Event savedEvent = eventRepository.save(event);
-        return eventMapper.toDTO(savedEvent);
+        return eventMapper.toDTO(eventRepository.save(eventMapper.toEntity(eventDTO)));
     }
 
     @Override
-    public Optional<Event> getEventById(Long eventId) {
-        return this.eventRepository.findById(eventId);
+    public EventDTO getEventById(Long id) {
+        return eventMapper.toDTO(
+                eventRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Événement introuvable : " + id))
+        );
     }
 
     @Override
-    public List<Event> getAllEvents() {
-        return this.eventRepository.findAll();
+    public List<EventDTO> getAllEvents() {
+        return eventRepository.findAll()
+                .stream()
+                .map(eventMapper::toDTO)
+                .toList();
     }
 
     @Override
     public EventDTO updateEventById(Long id, EventDTO eventDTO) {
         Event existingEvent = eventRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Événement introuvable : " + id));
 
-        existingEvent.setEventTitle(eventDTO.getEventTitle());
-        existingEvent.setEventDescription(eventDTO.getEventDescription());
-        existingEvent.setEventLocation(eventDTO.getEventLocation());
-        existingEvent.setEventPlacesNumber(eventDTO.getEventPlacesNumber());
-        existingEvent.setEventDateTime(eventDTO.getEventDateTime());
+        existingEvent.setEventTitle(eventDTO.eventTitle());
+        existingEvent.setEventDescription(eventDTO.eventDescription());
+        existingEvent.setEventLocation(eventDTO.eventLocation());
+        existingEvent.setEventPlacesNumber(eventDTO.eventPlacesNumber());
+        existingEvent.setEventDateTime(eventDTO.eventDateTime());
 
-        Event updatedEvent = eventRepository.save(existingEvent);
-
-        return eventMapper.toDTO(updatedEvent);
+        return eventMapper.toDTO(eventRepository.save(existingEvent));
     }
 
     @Override
-    public boolean deleteEventById(Long id) {
-        Optional<Event> event = eventRepository.findById(id);
-        if (event.isPresent()) {
-            eventRepository.deleteById(id);
-            return true;
+    public void deleteEventById(Long id) {
+        if (!eventRepository.existsById(id)) {
+            throw new EntityNotFoundException("Événement introuvable : " + id);
         }
-        return false;
+        eventRepository.deleteById(id);
     }
 
     @Override
     public int getAvailablePlacesForEvent(Long eventId) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Événement introuvable : " + eventId));
 
-        List<Cart> carts = cartRepository.findByItems_Offer_Event_EventId(eventId);
-
-        int reservedPlaces = 0;
-
-        for (Cart cart : carts) {
-            for (CartItem cartItem : cart.getItems()) {
-                if (cartItem.getOffer().getEvent().getEventId().equals(eventId)) {
-                    int placesPerOffer = cartItem.getOffer().getOfferCategory().getPlacesPerOffer();
-                    reservedPlaces += placesPerOffer;
-                }
-            }
-        }
+        int reservedPlaces = cartRepository.findByItems_Offer_Event_EventId(eventId)
+                .stream()
+                .flatMap(cart -> cart.getItems().stream())
+                .filter(item -> item.getOffer().getEvent().getEventId().equals(eventId))
+                .mapToInt(item -> item.getOffer().getOfferCategory().getPlacesPerOffer())
+                .sum();
 
         return event.getEventPlacesNumber() - reservedPlaces;
     }
-
-
 }

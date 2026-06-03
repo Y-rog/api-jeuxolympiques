@@ -1,28 +1,33 @@
 package com.yrog.apijeuxolympiques.security.service;
 
+import com.yrog.apijeuxolympiques.dto.auth.SignupRequest;
 import com.yrog.apijeuxolympiques.entity.User;
 import com.yrog.apijeuxolympiques.repository.UserRepository;
-import com.yrog.apijeuxolympiques.dto.auth.SignupRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
+/**
+ * Service gérant les opérations d'authentification.
+ */
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    /**
+     * Change le mot de passe d'un utilisateur.
+     *
+     * @param request la requête contenant le username et le nouveau mot de passe
+     */
+    public void changePassword(SignupRequest request) {
+        User user = userRepository.findByUsername(request.username())
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur introuvable : " + request.username()));
 
-    public void changePassword(SignupRequest user) {
-        Optional<User> oldUser = userRepository.findByUsername(user.getUsername());
-        if(oldUser.isPresent()) {User monUser = oldUser.get();
-            monUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            this.userRepository.save(monUser);
-        }
+        user.setPassword(passwordEncoder.encode(request.password()));
+        userRepository.save(user);
     }
 }
