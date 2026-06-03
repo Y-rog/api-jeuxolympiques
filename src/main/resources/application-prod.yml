@@ -15,8 +15,8 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      # update : adapté pour la démo — passer à validate en production réelle
-      ddl-auto: update
+      # update : spour la démo — passer à validate en production réelle
+      ddl-auto: create-drop
   sql:
     init:
       # always : exécute data.sql à chaque démarrage avec ON CONFLICT DO NOTHING

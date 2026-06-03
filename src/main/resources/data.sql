@@ -3,7 +3,6 @@ INSERT INTO offer_category (title, places_per_offer) VALUES
 ('Solo', 1),
 ('Duo', 2),
 ('Familiale', 4);
-ON CONFLICT DO NOTHING;
 
 -- Insertion des événements
 INSERT INTO event (event_title, event_description, event_location, event_places_number, event_date_time) VALUES
@@ -17,7 +16,6 @@ INSERT INTO event (event_title, event_description, event_location, event_places_
 ('Finale Athlétisme 100m', 'Grande finale du 100m', 'Stade de France', 60000, '2026-07-29 21:00:00'),
 ('Quart de finale Tennis', 'Finale simple hommes', 'Roland Garros', 15000, '2026-07-31 15:00:00'),
 ('Finale Boxe', 'Finale poids lourds', 'Zénith de Paris', 7000, '2026-08-01 20:30:00');
-ON CONFLICT DO NOTHING;
 
 INSERT INTO offer (availability, price, event_id, offer_category_id, is_active) VALUES
 (true, 20.00, 1, 1, true),
@@ -59,4 +57,3 @@ INSERT INTO offer (availability, price, event_id, offer_category_id, is_active) 
 (true, 23.00, 10, 1, true),
 (true, 42.00, 10, 2, true),
 (true, 79.00, 10, 3, true);
-ON CONFLICT DO NOTHING;
