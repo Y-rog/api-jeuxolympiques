@@ -1,9 +1,8 @@
 package com.yrog.apijeuxolympiques.entity;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-
-import lombok.Getter;
-import lombok.Setter;
-
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +12,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table (name = "events")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "events")
 public class Event {
 
     @Id
@@ -39,7 +41,7 @@ public class Event {
     /**
      * Date et heure de l'événement.
      */
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable = false)
     private LocalDateTime eventDateTime;
-
 }
