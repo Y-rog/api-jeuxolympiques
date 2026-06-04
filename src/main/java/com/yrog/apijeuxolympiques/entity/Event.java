@@ -40,7 +40,6 @@ public class Event {
     /**
      * Date et heure de l'événement.
      */
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     @Column(nullable = false)
     private LocalDateTime eventDateTime;
 }
