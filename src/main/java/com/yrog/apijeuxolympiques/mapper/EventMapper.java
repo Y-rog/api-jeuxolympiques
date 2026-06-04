@@ -20,6 +20,6 @@ public interface EventMapper {
     /**
      * Convertit un EventDTO en Event.
      */
-    @Mapping(target = "eventId", ignore = true)@Mapping(target = "eventId", ignore = true)
+    @Mapping(target = "eventId", ignore = true)
     Event toEntity(EventDTO eventDTO);
 }
