@@ -28,14 +28,13 @@ public class EventControllerUnitTest {
     private EventController eventController;
 
     private EventDTO buildEventDTO() {
-        return new EventDTO(
-                null,
-                "Finale Football",
-                "Match pour la médaille d'or",
-                "Stade de France",
-                4,
-                LocalDateTime.of(2024, 7, 30, 20, 0)
-        );
+        EventDTO dto = new EventDTO();
+        dto.setEventTitle("Finale Football");
+        dto.setEventDescription("Match pour la médaille d'or");
+        dto.setEventLocation("Stade de France");
+        dto.setEventPlacesNumber(4);
+        dto.setEventDateTime(LocalDateTime.of(2024, 7, 30, 20, 0));
+        return dto;
     }
 
     @Test
@@ -47,7 +46,7 @@ public class EventControllerUnitTest {
 
         assertThat(response.getStatusCode().value()).isEqualTo(200);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().eventTitle()).isEqualTo("Finale Football");
+        assertThat(response.getBody().getEventTitle()).isEqualTo("Finale Football");
     }
 
     @Test

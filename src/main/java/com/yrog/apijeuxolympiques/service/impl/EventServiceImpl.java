@@ -51,11 +51,11 @@ public class EventServiceImpl implements EventService {
         Event existingEvent = eventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Événement introuvable : " + id));
 
-        existingEvent.setEventTitle(eventDTO.eventTitle());
-        existingEvent.setEventDescription(eventDTO.eventDescription());
-        existingEvent.setEventLocation(eventDTO.eventLocation());
-        existingEvent.setEventPlacesNumber(eventDTO.eventPlacesNumber());
-        existingEvent.setEventDateTime(eventDTO.eventDateTime());
+        existingEvent.setEventTitle(eventDTO.getEventTitle());
+        existingEvent.setEventDescription(eventDTO.getEventDescription());
+        existingEvent.setEventLocation(eventDTO.getEventLocation());
+        existingEvent.setEventPlacesNumber(eventDTO.getEventPlacesNumber());
+        existingEvent.setEventDateTime(eventDTO.getEventDateTime());
 
         return eventMapper.toDTO(eventRepository.save(existingEvent));
     }
