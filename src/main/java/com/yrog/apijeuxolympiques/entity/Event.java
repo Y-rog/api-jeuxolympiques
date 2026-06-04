@@ -41,7 +41,7 @@ public class Event {
     /**
      * Date et heure de l'événement.
      */
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     @Column(nullable = false)
     private LocalDateTime eventDateTime;
 }
