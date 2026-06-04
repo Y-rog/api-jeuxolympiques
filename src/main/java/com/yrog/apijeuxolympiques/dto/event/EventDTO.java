@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
 /**
  * DTO représentant les informations d'un événement olympique.
  *
- * @param eventId          l'identifiant de l'événement (null à la création)
- * @param eventTitle       le titre de l'événement
- * @param eventDescription la description de l'événement
- * @param eventLocation    le lieu de l'événement
+ * @param eventId           l'identifiant de l'événement (null à la création)
+ * @param eventTitle        le titre de l'événement
+ * @param eventDescription  la description de l'événement
+ * @param eventLocation     le lieu de l'événement
  * @param eventPlacesNumber le nombre de places disponibles
- * @param eventDateTime    la date et heure de l'événement
+ * @param eventDateTime     la date et heure de l'événement
  */
 @Schema(description = "Informations sur l'événement")
 public record EventDTO(
@@ -42,8 +42,8 @@ public record EventDTO(
         Integer eventPlacesNumber,
 
         @NotNull(message = "La date et l'heure sont obligatoires")
-        @Schema(description = "Date et heure de l'événement", example = "2026-07-22T20:00:00")
-        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        @Schema(description = "Date et heure de l'événement", example = "23/07/2026 20:00")
+        @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
         LocalDateTime eventDateTime
 
 ) {}
