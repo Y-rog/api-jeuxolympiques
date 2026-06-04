@@ -29,6 +29,7 @@ public class EventControllerUnitTest {
 
     private EventDTO buildEventDTO() {
         return new EventDTO(
+                null,
                 "Finale Football",
                 "Match pour la médaille d'or",
                 "Stade de France",
