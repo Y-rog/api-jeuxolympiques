@@ -43,7 +43,7 @@ public record EventDTO (
 
     @NotNull(message = "La date et l'heur sont obligatoire")
     @Schema(description = "Date et heure de l'événement", example = "22/07/2024 20:00")
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     LocalDateTime eventDateTime
 
 ) {}
