@@ -14,6 +14,7 @@ public interface EventMapper {
     /**
      * Convertit un Event en EventDTO.
      */
+    // Fix: eventId mapping
     @Mapping(source = "eventId", target = "eventId")
     EventDTO toDTO(Event event);
 
