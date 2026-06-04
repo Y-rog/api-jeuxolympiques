@@ -34,6 +34,5 @@ public class EventDTO {
         private Integer eventPlacesNumber;
 
         @NotNull(message = "La date et l'heure sont obligatoires")
-        @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
         private LocalDateTime eventDateTime;
 }
