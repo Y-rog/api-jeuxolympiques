@@ -1,5 +1,6 @@
 package com.yrog.apijeuxolympiques.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -39,6 +40,7 @@ public class Event {
     /**
      * Date et heure de l'événement.
      */
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm", shape = JsonFormat.Shape.STRING)
     @Column(nullable = false)
     private LocalDateTime eventDateTime;
 }
