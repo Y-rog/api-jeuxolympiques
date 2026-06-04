@@ -6,11 +6,14 @@ import jakarta.validation.constraints.*;
 /**
  * DTO représentant une catégorie d'offre.
  *
+ * @param categoryId     l'identifiant de la catégorie (null à la création)
  * @param title          le nom de la catégorie (ex: Solo, Duo, Familiale)
  * @param placesPerOffer le nombre de places incluses dans cette catégorie
  */
 @Schema(description = "Catégorie d'offre (ex: Solo, Duo, Familiale)")
 public record OfferCategoryDTO(
+
+        Long categoryId,
 
         @NotNull(message = "Le titre est obligatoire")
         @Size(min = 2, max = 30, message = "Le titre doit faire entre 2 et 30 caractères")

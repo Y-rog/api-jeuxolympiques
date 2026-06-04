@@ -1,23 +1,20 @@
--- Insertion des catégories d'offres
 INSERT INTO offer_categories (title, places_per_offer)
 VALUES ('Solo', 1),
        ('Duo', 2),
        ('Familiale', 4);
 
--- Insertion des événements
 INSERT INTO events (event_title, event_description, event_location, event_places_number, event_date_time)
-VALUES ('Finale Football', 'Match pour la médaille d''or', 'Stade de France', 4, '2026-07-30 20:00:00'),
+VALUES ('Finale Football', 'Match pour la medaille d''or', 'Stade de France', 4, '2026-07-30 20:00:00'),
        ('Demi-finale Basketball', 'Les meilleurs s''affrontent', 'Stade de Lille', 15, '2026-07-28 18:00:00'),
        ('Finale Natation', 'Courses finales', 'Centre Aquatique', 50, '2026-07-25 19:00:00'),
-       ('Match de poule A Escrime par équipe', 'Phase finale', 'Grand Palais', 3000, '2026-07-26 17:00:00'),
-       ('Demi-finale Gymnastique', 'Compétition finale', 'Bercy Arena', 10000, '2026-07-24 16:00:00'),
+       ('Match de poule A Escrime par equipe', 'Phase finale', 'Grand Palais', 3000, '2026-07-26 17:00:00'),
+       ('Demi-finale Gymnastique', 'Competition finale', 'Bercy Arena', 10000, '2026-07-24 16:00:00'),
        ('Demi-finale Volley Ball', 'Quart de finale', 'Stade Pierre Mauroy', 12000, '2026-07-23 20:00:00'),
        ('Match de poule A Handball', 'Demi-finale femmes', 'Stade de Lyon', 14000, '2026-07-27 18:30:00'),
-       ('Finale Athlétisme 100m', 'Grande finale du 100m', 'Stade de France', 60000, '2026-07-29 21:00:00'),
+       ('Finale Athletisme 100m', 'Grande finale du 100m', 'Stade de France', 60000, '2026-07-29 21:00:00'),
        ('Quart de finale Tennis', 'Finale simple hommes', 'Roland Garros', 15000, '2026-07-31 15:00:00'),
-       ('Finale Boxe', 'Finale poids lourds', 'Zénith de Paris', 7000, '2026-08-01 20:30:00');
+       ('Finale Boxe', 'Finale poids lourds', 'Zenith de Paris', 7000, '2026-08-01 20:30:00');
 
--- Insertion des offres
 INSERT INTO offers (availability, price, event_id, offer_category_id, is_active)
 VALUES (true, 20.00, 1, 1, true),
        (true, 38.00, 1, 2, true),
